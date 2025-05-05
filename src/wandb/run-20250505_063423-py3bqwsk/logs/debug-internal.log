@@ -1,0 +1,15 @@
+{"time":"2025-05-05T06:34:23.586217092Z","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/workspaces/monte-carlo-manipulation/src/wandb/run-20250505_063423-py3bqwsk/logs/debug-core.log"}
+{"time":"2025-05-05T06:34:23.989627436Z","level":"INFO","msg":"created new stream","id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:23.989900337Z","level":"INFO","msg":"stream: started","id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:23.989950702Z","level":"INFO","msg":"writer: Do: started","stream_id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:23.990018066Z","level":"INFO","msg":"sender: started","stream_id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:23.990018747Z","level":"INFO","msg":"handler: started","stream_id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:24.264223829Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-05T06:34:24.580947934Z","level":"INFO","msg":"stream: closing","id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:24.581381117Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-05T06:34:24.592310542Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-05T06:34:25.556969091Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-05T06:34:25.814129387Z","level":"INFO","msg":"handler: closed","stream_id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:25.814166514Z","level":"INFO","msg":"writer: Close: closed","stream_id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:25.814195918Z","level":"INFO","msg":"sender: closed","stream_id":"py3bqwsk"}
+{"time":"2025-05-05T06:34:25.814941764Z","level":"INFO","msg":"stream: closed","id":"py3bqwsk"}

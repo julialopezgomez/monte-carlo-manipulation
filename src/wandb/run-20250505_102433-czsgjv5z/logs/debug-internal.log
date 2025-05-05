@@ -1,0 +1,11 @@
+{"time":"2025-05-05T10:24:33.13567689Z","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/workspaces/monte-carlo-manipulation/src/wandb/run-20250505_102433-czsgjv5z/logs/debug-core.log"}
+{"time":"2025-05-05T10:24:33.55674543Z","level":"INFO","msg":"created new stream","id":"czsgjv5z"}
+{"time":"2025-05-05T10:24:33.557043048Z","level":"INFO","msg":"stream: started","id":"czsgjv5z"}
+{"time":"2025-05-05T10:24:33.557190566Z","level":"INFO","msg":"writer: Do: started","stream_id":"czsgjv5z"}
+{"time":"2025-05-05T10:24:33.56802443Z","level":"INFO","msg":"sender: started","stream_id":"czsgjv5z"}
+{"time":"2025-05-05T10:24:33.607528967Z","level":"INFO","msg":"handler: started","stream_id":"czsgjv5z"}
+{"time":"2025-05-05T10:24:33.870579027Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-05T10:29:42.288174225Z","level":"INFO","msg":"stream: closing","id":"czsgjv5z"}
+{"time":"2025-05-05T10:29:42.28832243Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-05T10:29:42.289067302Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-05T10:29:42.991776791Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}

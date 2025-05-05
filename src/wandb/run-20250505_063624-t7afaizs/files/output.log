@@ -1,0 +1,20 @@
+Using device: cpu
+Episodes:   0%|                                                                                                                   | 0/50 [00:48<?, ?it/s]
+Traceback (most recent call last):                                                                                                                       
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 484, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 431, in main
+    action = mcts.get_action(state, temperature=1.0)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 215, in search
+    node = node.select_child()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 96, in select_child
+    return max(self.children, key=lambda child: child.uct_score())
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 96, in <lambda>
+    return max(self.children, key=lambda child: child.uct_score())
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 84, in uct_score
+    with torch.no_grad():
+  File "/usr/local/lib/python3.10/dist-packages/torch/autograd/grad_mode.py", line 54, in __enter__
+    self.prev = torch.is_grad_enabled()
+KeyboardInterrupt

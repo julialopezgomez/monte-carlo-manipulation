@@ -1,0 +1,26 @@
+Using device: cpu
+Episodes:   0%|                                                              | 0/2 [3:24:50<?, ?ep/s, lastR=0.00, avgR=0.00, p_loss=-0.056, v_loss=0.026]
+Traceback (most recent call last):                                                                                                                       
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 506, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 478, in main
+    avg_test = test_policy(env, mcts)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 500, in test_policy
+    a = mcts.get_action(s, temperature=0.0)  # greedy
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 215, in search
+    node = node.select_child()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 96, in select_child
+    return max(self.children, key=lambda child: child.uct_score())
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 96, in <lambda>
+    return max(self.children, key=lambda child: child.uct_score())
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 86, in uct_score
+    _, value = self.value_net(state_tensor)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 45, in forward
+    x = F.relu(self.fc1(x))
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1601, in __getattr__
+    def __getattr__(self, name: str) -> Union[Tensor, 'Module']:
+KeyboardInterrupt

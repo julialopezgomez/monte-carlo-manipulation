@@ -1,0 +1,8 @@
+Using device: cpu
+Episodes:   0%|                                                                                                                   | 0/50 [00:00<?, ?it/s]
+Traceback (most recent call last):                                                                                                                       
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 472, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 419, in main
+    action = mcts.get_action(state, temperature=1.0)
+NameError: name 'mcts' is not defined

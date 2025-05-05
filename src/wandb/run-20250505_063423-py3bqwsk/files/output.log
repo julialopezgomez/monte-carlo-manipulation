@@ -1,0 +1,7 @@
+[INFO] using device cpu
+Traceback (most recent call last):
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 466, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 400, in main
+    mcts = PolicyValueMCTS(env.params, env, device=device)
+AttributeError: 'ManipulationEnv' object has no attribute 'params'

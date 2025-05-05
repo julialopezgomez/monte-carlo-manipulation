@@ -1,0 +1,16 @@
+{"time":"2025-05-05T06:47:18.065789988Z","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/workspaces/monte-carlo-manipulation/src/wandb/run-20250505_064717-r98s1wuz/logs/debug-core.log"}
+{"time":"2025-05-05T06:47:18.420608592Z","level":"INFO","msg":"created new stream","id":"r98s1wuz"}
+{"time":"2025-05-05T06:47:18.420902734Z","level":"INFO","msg":"stream: started","id":"r98s1wuz"}
+{"time":"2025-05-05T06:47:18.421012853Z","level":"INFO","msg":"writer: Do: started","stream_id":"r98s1wuz"}
+{"time":"2025-05-05T06:47:18.421811054Z","level":"INFO","msg":"sender: started","stream_id":"r98s1wuz"}
+{"time":"2025-05-05T06:47:18.421041057Z","level":"INFO","msg":"handler: started","stream_id":"r98s1wuz"}
+{"time":"2025-05-05T06:47:18.665874888Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-05T09:06:04.482011037Z","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/julialg/manipulation_mcts/r98s1wuz/file_stream\": EOF"}
+{"time":"2025-05-05T10:12:10.233547858Z","level":"INFO","msg":"stream: closing","id":"r98s1wuz"}
+{"time":"2025-05-05T10:12:10.233753539Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-05T10:12:10.234828134Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-05T10:12:10.935962971Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-05T10:12:11.221714122Z","level":"INFO","msg":"handler: closed","stream_id":"r98s1wuz"}
+{"time":"2025-05-05T10:12:11.221827982Z","level":"INFO","msg":"writer: Close: closed","stream_id":"r98s1wuz"}
+{"time":"2025-05-05T10:12:11.221907279Z","level":"INFO","msg":"sender: closed","stream_id":"r98s1wuz"}
+{"time":"2025-05-05T10:12:11.22286388Z","level":"INFO","msg":"stream: closed","id":"r98s1wuz"}
