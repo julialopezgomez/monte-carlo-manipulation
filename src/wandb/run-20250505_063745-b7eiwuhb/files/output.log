@@ -1,3 +1,35 @@
 Using device: cpu
-Episodes:   0%|                                                                                                                   | 0/50 [00:00<?, ?it/s]
-Steps:  20%|██████████████████████                                                                                        | 4/20 [01:42<06:51, 25.73s/it]
+Episodes:   0%|                                                                                                                   | 0/50 [07:41<?, ?it/s]
+Traceback (most recent call last):                                                                                                                       
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 484, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 457, in main
+    avg_test = test_policy(env, mcts)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 478, in test_policy
+    a = mcts.get_action(s, temperature=0.0)  # greedy
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 226, in search
+    value = node.rollout(self.rollout_depth)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 151, in rollout
+    action_probs, _ = self.policy_net(state_tensor)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 52, in forward
+    value = torch.tanh(self.value_head(x))
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1604, in __getattr__
+    if name in _parameters:
+KeyboardInterrupt
+Exception ignored in atexit callback: <function _start_and_connect_service.<locals>.teardown_atexit at 0x7f40cb053250>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/service_connection.py", line 94, in teardown_atexit
+    conn.teardown(hooks.exit_code)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/service_connection.py", line 226, in teardown
+    self._router.join()
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/router.py", line 75, in join
+    self._thread.join()
+  File "/usr/lib/python3.10/threading.py", line 1096, in join
+    self._wait_for_tstate_lock()
+  File "/usr/lib/python3.10/threading.py", line 1116, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+KeyboardInterrupt:

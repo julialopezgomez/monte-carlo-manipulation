@@ -1,0 +1,23 @@
+Using device: cpu
+Episodes:   0%|                                                                 | 0/2 [05:07<?, ?ep/s, lastR=0.00, avgR=0.00, p_loss=0.081, v_loss=0.103]
+Traceback (most recent call last):                                                                                                                       
+Step 0: Action 1, Reward 0.0, Next State [4 1 0]
+Step 1: Action 2, Reward 0.0, Next State [4 1 0]
+Step 2: Action 3, Reward 0.0, Next State [4 1 0]
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 509, in <module>
+    if __name__=="__main__":
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 479, in main
+    if ep % 10 == 0:
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 503, in test_policy
+    while not done:
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 235, in search
+    rollout_value = node.rollout(self.rollout_depth)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 151, in rollout
+    action_probs, _ = self.policy_net(state_tensor)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 52, in forward
+    value = torch.tanh(self.value_head(x))
+KeyboardInterrupt

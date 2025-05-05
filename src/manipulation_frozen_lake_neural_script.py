@@ -411,7 +411,7 @@ def main():
         policy_net=policy_net,
         value_net=value_net,
         device=device,
-        num_simulations=5000,
+        num_simulations=10000,
         exploration_weight=1.0,
         rollout_depth=10000,
         lr=0.001
@@ -421,47 +421,73 @@ def main():
     all_rewards, all_p_losses, all_v_losses = [], [], []
 
     # 4) outer loop: episodes
-    for ep in trange(args.episodes, desc="Episodes"):
+    ep_bar = trange(args.episodes, desc="Episodes", unit="ep")
+    for ep in ep_bar:
         state, _ = env.reset()
         ep_reward = 0
+        # optional inner bar
+        if args.verbose:
+            step_bar = trange(args.max_steps, desc=" Steps", leave=False, unit="st")
+        else:
+            step_bar = range(args.max_steps)
 
-        # wrap inner loop in tqdm if verbose
-        steps = trange(args.max_steps, desc="Steps", leave=False) if args.verbose else range(args.max_steps)
-        for step in steps:
+        for step in step_bar:
             action = mcts.get_action(state, temperature=1.0)
             next_state, reward, done, trunc, _ = env.step(action)
             ep_reward += reward
-
-            # push experience
-            mcts.buffer.append((state, action, reward, next_state))
             state = next_state
 
-            # every k steps update nets
+            print(f"Step {step}: Action {action}, Reward {reward}, Next State {next_state}")
+            # accumulate experiences & occasionally update
+            mcts.buffer.append((state, action, reward, next_state))
             if step % args.update_fq == 0:
                 p_loss, v_loss = mcts.update_networks()
                 if p_loss is not None:
                     all_p_losses.append(p_loss)
                     all_v_losses.append(v_loss)
                     if args.use_wandb:
-                        wandb.log({"policy_loss": p_loss, "value_loss": v_loss, "step": ep*args.max_steps+step})
+                        wandb.log({
+                        "policy_loss": p_loss,
+                        "value_loss": v_loss,
+                        "episode": ep,
+                        "step": ep*args.max_steps + step
+                        })
+                    # update the postfix on the inner bar
+                    if args.verbose:
+                        step_bar.set_postfix(
+                        {"p_loss": f"{p_loss:.3f}", "v_loss": f"{v_loss:.3f}"}
+                        )
 
             if done or trunc:
+                print(f"Episode {ep}: Done at step {step} with reward {ep_reward} because of trunc: {trunc} or done: {done}")
                 break
 
         all_rewards.append(ep_reward)
         if args.use_wandb:
             wandb.log({"episode_reward": ep_reward, "episode": ep})
 
-        # occasionally test greedy policy
+        # every episode, or every N episodes, update the outer bar postfix
+        postfix = {
+        "lastR": f"{ep_reward:.2f}",
+        "avgR": f"{np.mean(all_rewards[-10:]):.2f}",
+        "p_loss": f"{np.mean(all_p_losses[-10:]):.3f}" if all_p_losses else "n/a",
+        "v_loss": f"{np.mean(all_v_losses[-10:]):.3f}" if all_v_losses else "n/a"
+        }
+        ep_bar.set_postfix(postfix)
+
+        # test periodically (prints via tqdm.write so as not to break the bar)
         if ep % 10 == 0:
             avg_test = test_policy(env, mcts)
-            print(f"[TEST] ep{ep:03d}  trainR={ep_reward:.2f}  testR={avg_test:.2f}")
+            tqdm.write(f"[TEST] ep{ep:03d} trainR={ep_reward:.2f} testR={avg_test:.2f}")
             if args.use_wandb:
                 wandb.log({"test_reward": avg_test, "episode": ep})
 
+    print("The model is being saved")
     # 5) save final policy/value nets
     os.makedirs("models", exist_ok=True)
     torch.save(mcts.policy_value_net.state_dict(), "models/policy_value_net.pt")
+    torch.save(mcts.value_net.state_dict(), "models/value_net.pt")
+    print("The model is saved")
 
     # 6) plot or flush wandb
     if args.use_wandb:
