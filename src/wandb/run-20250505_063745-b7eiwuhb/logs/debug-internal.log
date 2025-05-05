@@ -1,0 +1,7 @@
+{"time":"2025-05-05T06:37:45.446719721Z","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/workspaces/monte-carlo-manipulation/src/wandb/run-20250505_063745-b7eiwuhb/logs/debug-core.log"}
+{"time":"2025-05-05T06:37:45.774912538Z","level":"INFO","msg":"created new stream","id":"b7eiwuhb"}
+{"time":"2025-05-05T06:37:45.775355368Z","level":"INFO","msg":"stream: started","id":"b7eiwuhb"}
+{"time":"2025-05-05T06:37:45.775465837Z","level":"INFO","msg":"writer: Do: started","stream_id":"b7eiwuhb"}
+{"time":"2025-05-05T06:37:45.775501126Z","level":"INFO","msg":"handler: started","stream_id":"b7eiwuhb"}
+{"time":"2025-05-05T06:37:45.775521839Z","level":"INFO","msg":"sender: started","stream_id":"b7eiwuhb"}
+{"time":"2025-05-05T06:37:45.987949152Z","level":"INFO","msg":"Starting system monitor"}

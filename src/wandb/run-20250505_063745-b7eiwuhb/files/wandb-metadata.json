@@ -1,0 +1,41 @@
+{
+  "os": "Linux-6.10.14-linuxkit-x86_64-with-glibc2.35",
+  "python": "CPython 3.10.12",
+  "startedAt": "2025-05-05T06:37:45.443896Z",
+  "args": [
+    "--episodes",
+    "50",
+    "--max-steps",
+    "20",
+    "--budget",
+    "10000",
+    "--use-wandb",
+    "--verbose"
+  ],
+  "program": "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py",
+  "codePath": "src/manipulation_frozen_lake_neural_script.py",
+  "git": {
+    "remote": "https://github.com/julialopezgomez/monte-carlo-manipulation.git",
+    "commit": "785da89e1edbbfa0c19ab22612c4d79dad35327c"
+  },
+  "email": "julialg2002@gmail.com",
+  "root": "/workspaces/monte-carlo-manipulation/src",
+  "host": "7713d7bb6adf",
+  "executable": "/usr/bin/python",
+  "codePathLocal": "manipulation_frozen_lake_neural_script.py",
+  "cpu_count": 12,
+  "cpu_count_logical": 12,
+  "disk": {
+    "/": {
+      "total": "62671097856",
+      "used": "46702559232"
+    }
+  },
+  "memory": {
+    "total": "8219123712"
+  },
+  "cpu": {
+    "count": 12,
+    "countLogical": 12
+  }
+}

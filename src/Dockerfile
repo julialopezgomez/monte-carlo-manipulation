@@ -9,7 +9,7 @@ ENV MOSEKLM_LICENSE_FILE=/workspaces/monte-carlo-manipulation/src/mosek.lic
 
 RUN python3 -m pip install --no-cache-dir ipywidgets==8.0.4 widgetsnbextension==4.0.5 jupyterlab-widgets
 RUN python3 -m pip install --no-cache-dir scipy==1.10.1 pymcubes==0.1.4 quadprog cvxpy mosek cvxpy[MOSEK] plotly gymnasium
-RUN python -m pip install gurobipy tqdm
+RUN python -m pip install gurobipy tqdm wandb
 # Install PyTorch with matching CUDA support
 RUN pip3 install --no-cache-dir \
     torch==2.0.1+cu117 \
