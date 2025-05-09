@@ -29,10 +29,9 @@ RUN apt-get update \
 ENV PYTHONPATH=/opt/drake/lib/python3.10/site-packages:$PYTHONPATH
 ENV MOSEKLM_LICENSE_FILE=/workspaces/monte-carlo-manipulation/src/mosek.lic
 
-# Copy & install Python deps
-COPY requirements.txt /workspace/monte-carlo-manipulation/src/requirements.txt
+# Install Python deps
 RUN pip3 install --no-cache-dir \
       --extra-index-url https://download.pytorch.org/whl/cu117 \
-      -r /workspace/requirements.txt
+      -r /workspace/monte-carlo-manipulation/src/requirements.txt
 
 
