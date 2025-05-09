@@ -1,0 +1,25 @@
+Using device: cpu
+Episodes:   0%|                                                                | 0/2 [17:25<?, ?ep/s, lastR=0.00, avgR=0.00, p_loss=-0.073, v_loss=0.021]
+Traceback (most recent call last):                                                                                                                       
+Step 0: State [0 1 0], Action 3, Reward 0.0, Next State [1 1 0]
+Step 1: State [1 1 0], Action 4, Reward 0.0, Next State [1 1 1]
+Step 2: State [1 1 1], Action 3, Reward 0.0, Next State [2 2 1]
+Step 3: State [2 2 1], Action 3, Reward 0.0, Next State [3 3 1]
+Step 4: State [3 3 1], Action 3, Reward 0.0, Next State [3 3 1]
+Step 5: State [3 3 1], Action 3, Reward 0.0, Next State [3 3 1]
+Step 6: State [3 3 1], Action 1, Reward 0.0, Next State [3 3 1]
+Episode 0: Done at step 6 with reward 0.0 because of trunc: False or done: True
+IS TESTING
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 512, in <module>
+    episode_reward = 0
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 482, in main
+    ep_bar.set_postfix(postfix)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 506, in test_policy
+    """Test the current policy greedily"""
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    def get_action(self, state, temperature=1.0):
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 235, in search
+    rollout_value = node.rollout(self.rollout_depth)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 149, in rollout
+    state_tensor = torch.FloatTensor(env_copy.unwrapped.s).unsqueeze(0).to(self.device)
+KeyboardInterrupt

@@ -1,3 +1,20 @@
 Using device: cpu
-Episodes:   0%|                                                                                                                    | 0/2 [00:00<?, ?ep/s]
- Steps:   0%|                                                                                                                     | 0/10 [00:00<?, ?st/s]
+Episodes:   0%|                                                                                                                    | 0/2 [03:54<?, ?ep/s]
+Traceback (most recent call last):                                                                                                                       
+Step 0: Action 1, Reward 0.0, Next State [4 1 0]
+Step 1: Action 2, Reward 0.0, Next State [4 1 0]
+Step 2: Action 5, Reward 0.0, Next State [4 1 0]
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 510, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 435, in main
+    action = mcts.get_action(state, temperature=1.0)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 226, in search
+    value = node.rollout(self.rollout_depth)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 155, in rollout
+    action = np.random.choice(len(action_probs), p=action_probs)
+  File "mtrand.pyx", line 922, in numpy.random.mtrand.RandomState.choice
+  File "/usr/lib/python3/dist-packages/numpy/core/numerictypes.py", line 358, in issubdtype
+    @set_module('numpy')
+KeyboardInterrupt

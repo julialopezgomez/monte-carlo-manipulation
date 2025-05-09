@@ -256,29 +256,31 @@ class NeuralMCTS:
         
         # Sample batch
         batch = random.sample(self.buffer, batch_size)
-        states, actions, values, next_states = zip(*batch)
+        states, actions, q_targets, next_states = zip(*batch)
         
         # Convert to tensors
         states = torch.FloatTensor(np.array(states)).to(self.device)
         actions = torch.LongTensor(actions).to(self.device)
-        values = torch.FloatTensor(values).to(self.device)
+        q_targets = torch.FloatTensor(q_targets).to(self.device)
         next_states = torch.FloatTensor(np.array(next_states)).to(self.device)
         
         # Update policy network
         self.policy_optimizer.zero_grad()
         log_probs, _ = self.policy_net(states)
-        policy_loss = -torch.mean(log_probs.gather(1, actions.unsqueeze(1)) * values.unsqueeze(1))
+        policy_loss = -torch.mean(log_probs.gather(1, actions.unsqueeze(1)) * q_targets.unsqueeze(1))
         policy_loss.backward()
         self.policy_optimizer.step()
         
         # Update value network
         self.value_optimizer.zero_grad()
         _, pred_values = self.value_net(states)
-        value_loss = F.mse_loss(pred_values.squeeze(), values)
+        value_loss = F.mse_loss(pred_values.squeeze(), q_targets)
         value_loss.backward()
         self.value_optimizer.step()
         
         return policy_loss.item(), value_loss.item()
+    
+    
     
     def get_action(self, state, temperature=1.0):
         """Get action from MCTS search"""
@@ -432,14 +434,16 @@ def main():
             step_bar = range(args.max_steps)
 
         for step in step_bar:
-            action = mcts.get_action(state, temperature=1.0)
+            action = mcts.get_action(state, temperature=0.0)
             next_state, reward, done, trunc, _ = env.step(action)
             ep_reward += reward
-            state = next_state
 
-            print(f"Step {step}: Action {action}, Reward {reward}, Next State {next_state}")
+            
             # accumulate experiences & occasionally update
-            mcts.buffer.append((state, action, reward, next_state))
+            
+            q_targets = compute_returns([reward], gamma=0.99)
+            print(f"Step {step}: State {state}, Action {action}, q_value {q_targets[0]}, Next State {next_state}")
+            mcts.buffer.append((state, action, q_targets[0], next_state))
             if step % args.update_fq == 0:
                 p_loss, v_loss = mcts.update_networks()
                 if p_loss is not None:
@@ -461,6 +465,8 @@ def main():
             if done or trunc:
                 print(f"Episode {ep}: Done at step {step} with reward {ep_reward} because of trunc: {trunc} or done: {done}")
                 break
+            
+            state = next_state
 
         all_rewards.append(ep_reward)
         if args.use_wandb:
@@ -477,6 +483,7 @@ def main():
 
         # test periodically (prints via tqdm.write so as not to break the bar)
         if ep % 10 == 0:
+            print("IS TESTING")
             avg_test = test_policy(env, mcts)
             tqdm.write(f"[TEST] ep{ep:03d} trainR={ep_reward:.2f} testR={avg_test:.2f}")
             if args.use_wandb:
@@ -495,16 +502,35 @@ def main():
 
     print("Training done. Rewards:", np.mean(all_rewards[-10:]))
 
-def test_policy(env, mcts, num_episodes=10):
-    tot = 0
-    for _ in range(num_episodes):
-        s, _ = env.reset()
-        done=False
+def test_policy(env, mcts, num_tests=10):
+    """Test the current policy greedily"""
+    total_reward = 0
+    
+    for _ in range(num_tests):
+        state, _ = env.reset()
+        done = False
+        episode_reward = 0
+        print(f"Test Episode: State {state}")
+        
         while not done:
-            a = mcts.get_action(s, temperature=0.0)  # greedy
-            s, r, done, trunc, _ = env.step(a)
-            tot += r
-    return tot/num_episodes
+            action = mcts.get_action(state, temperature=0)  # Greedy
+            new_state, reward, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+            episode_reward += reward
+            print(f"Test Step: State {state}, Action {action}, Reward {reward}, Next State {new_state}")
+            state = new_state
+            
+        total_reward += episode_reward
+    
+    return total_reward / num_tests
+
+def compute_returns(rewards, gamma=0.99):
+    returns = []
+    R = 0
+    for r in reversed(rewards):
+        R = r + gamma * R
+        returns.insert(0, R)
+    return returns
 
 if __name__=="__main__":
     main()

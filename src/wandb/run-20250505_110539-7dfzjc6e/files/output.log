@@ -1,0 +1,11 @@
+Using device: cpu
+Episodes:   0%|                                                                                                                    | 0/2 [01:05<?, ?ep/s]
+Traceback (most recent call last):                                                                                                                       
+Step 0: State [0 1 0], Action 1, q_value 0.0, Next State [4 1 0]
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 536, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 448, in main
+    p_loss, v_loss = mcts.update_networks()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 264, in update_networks
+    values = torch.FloatTensor(values).to(self.device)
+UnboundLocalError: local variable 'values' referenced before assignment

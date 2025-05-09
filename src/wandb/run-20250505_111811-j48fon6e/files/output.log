@@ -1,0 +1,15 @@
+Using device: cpu
+Episodes:   0%|                                                                                                                    | 0/2 [48:29<?, ?ep/s]
+Traceback (most recent call last):                                                                                                                       
+Step 0: State [0 1 0], Action 1, q_value 0.0, Next State [4 1 0]
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 536, in <module>
+    main()
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 437, in main
+    action = mcts.get_action(state, temperature=0.0)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 287, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 235, in search
+    rollout_value = node.rollout(self.rollout_depth)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 152, in rollout
+    action_probs = torch.exp(action_probs).cpu().numpy().flatten()
+KeyboardInterrupt
