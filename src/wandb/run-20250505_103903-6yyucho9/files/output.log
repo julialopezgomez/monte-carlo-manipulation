@@ -1,0 +1,19 @@
+Using device: cpu
+Episodes:   0%|                                                                | 0/2 [08:54<?, ?ep/s, lastR=0.00, avgR=0.00, p_loss=-0.038, v_loss=0.021]
+Traceback (most recent call last):                                                                                                                       
+Step 0: State [0 1 0], Action 3, Reward 0.0, Next State [1 1 0]
+Step 1: State [1 1 0], Action 1, Reward 0.0, Next State [1 1 0]
+Episode 0: Done at step 1 with reward 0.0 because of trunc: False or done: True
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 511, in <module>
+    if __name__=="__main__":
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 481, in main
+    print("IS TESTING")
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 505, in test_policy
+    while not done:
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 285, in get_action
+    root = self.search(state)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 226, in search
+    value = node.rollout(self.rollout_depth)
+  File "/workspaces/monte-carlo-manipulation/src/manipulation_frozen_lake_neural_script.py", line 152, in rollout
+    action_probs = torch.exp(action_probs).cpu().numpy().flatten()
+KeyboardInterrupt

@@ -1,0 +1,10 @@
+{"time":"2025-05-05T10:48:05.765307594Z","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/workspaces/monte-carlo-manipulation/src/wandb/run-20250505_104805-bn6gl0ts/logs/debug-core.log"}
+{"time":"2025-05-05T10:48:06.080110628Z","level":"INFO","msg":"created new stream","id":"bn6gl0ts"}
+{"time":"2025-05-05T10:48:06.080489034Z","level":"INFO","msg":"stream: started","id":"bn6gl0ts"}
+{"time":"2025-05-05T10:48:06.080839554Z","level":"INFO","msg":"handler: started","stream_id":"bn6gl0ts"}
+{"time":"2025-05-05T10:48:06.080698872Z","level":"INFO","msg":"writer: Do: started","stream_id":"bn6gl0ts"}
+{"time":"2025-05-05T10:48:06.080730361Z","level":"INFO","msg":"sender: started","stream_id":"bn6gl0ts"}
+{"time":"2025-05-05T10:48:06.290195968Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-05T11:05:32.577660447Z","level":"INFO","msg":"stream: closing","id":"bn6gl0ts"}
+{"time":"2025-05-05T11:05:32.577893505Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-05T11:05:32.58025602Z","level":"INFO","msg":"Stopped system monitor"}

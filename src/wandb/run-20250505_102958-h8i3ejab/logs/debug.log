@@ -20,3 +20,4 @@ config: {'episodes': 2, 'max_steps': 10, 'budget': 10000, 'update_fq': 5, 'use_w
 2025-05-05 10:29:59,527 INFO    MainThread:84609 [wandb_run.py:_redirect():2483] Wrapping output streams.
 2025-05-05 10:29:59,528 INFO    MainThread:84609 [wandb_run.py:_redirect():2506] Redirects installed.
 2025-05-05 10:29:59,530 INFO    MainThread:84609 [wandb_init.py:init():1147] run started, returning control to user process
+2025-05-05 10:33:54,569 INFO    MsgRouterThr:84609 [mailbox.py:close():129] [no run ID] Closing mailbox, abandoning 1 handles.

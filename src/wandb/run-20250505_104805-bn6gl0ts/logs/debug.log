@@ -1,0 +1,887 @@
+2025-05-05 10:48:05,747 INFO    MainThread:87883 [wandb_setup.py:_flush():68] Current SDK version is 0.19.10
+2025-05-05 10:48:05,748 INFO    MainThread:87883 [wandb_setup.py:_flush():68] Configure stats pid to 87883
+2025-05-05 10:48:05,748 INFO    MainThread:87883 [wandb_setup.py:_flush():68] Loading settings from /root/.config/wandb/settings
+2025-05-05 10:48:05,748 INFO    MainThread:87883 [wandb_setup.py:_flush():68] Loading settings from /workspaces/monte-carlo-manipulation/src/wandb/settings
+2025-05-05 10:48:05,749 INFO    MainThread:87883 [wandb_setup.py:_flush():68] Loading settings from environment variables
+2025-05-05 10:48:05,749 INFO    MainThread:87883 [wandb_init.py:setup_run_log_directory():724] Logging user logs to /workspaces/monte-carlo-manipulation/src/wandb/run-20250505_104805-bn6gl0ts/logs/debug.log
+2025-05-05 10:48:05,750 INFO    MainThread:87883 [wandb_init.py:setup_run_log_directory():725] Logging internal logs to /workspaces/monte-carlo-manipulation/src/wandb/run-20250505_104805-bn6gl0ts/logs/debug-internal.log
+2025-05-05 10:48:05,750 INFO    MainThread:87883 [wandb_init.py:init():852] calling init triggers
+2025-05-05 10:48:05,751 INFO    MainThread:87883 [wandb_init.py:init():857] wandb.init called with sweep_config: {}
+config: {'episodes': 2, 'max_steps': 10, 'budget': 10000, 'update_fq': 5, 'use_wandb': True, 'verbose': True, '_wandb': {}}
+2025-05-05 10:48:05,751 INFO    MainThread:87883 [wandb_init.py:init():893] starting backend
+2025-05-05 10:48:05,751 INFO    MainThread:87883 [wandb_init.py:init():897] sending inform_init request
+2025-05-05 10:48:05,758 INFO    MainThread:87883 [backend.py:_multiprocessing_setup():101] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-05-05 10:48:05,759 INFO    MainThread:87883 [wandb_init.py:init():907] backend started and connected
+2025-05-05 10:48:05,760 INFO    MainThread:87883 [wandb_init.py:init():1002] updated telemetry
+2025-05-05 10:48:05,788 INFO    MainThread:87883 [wandb_init.py:init():1026] communicating run to backend with 90.0 second timeout
+2025-05-05 10:48:06,282 INFO    MainThread:87883 [wandb_init.py:init():1101] starting run threads in backend
+2025-05-05 10:48:06,452 INFO    MainThread:87883 [wandb_run.py:_console_start():2566] atexit reg
+2025-05-05 10:48:06,453 INFO    MainThread:87883 [wandb_run.py:_redirect():2414] redirect: wrap_raw
+2025-05-05 10:48:06,453 INFO    MainThread:87883 [wandb_run.py:_redirect():2483] Wrapping output streams.
+2025-05-05 10:48:06,454 INFO    MainThread:87883 [wandb_run.py:_redirect():2506] Redirects installed.
+2025-05-05 10:48:06,455 INFO    MainThread:87883 [wandb_init.py:init():1147] run started, returning control to user process
+2025-05-05 11:05:32,574 INFO    MsgRouterThr:87883 [mailbox.py:close():129] [no run ID] Closing mailbox, abandoning 1 handles.
+2025-05-05 11:05:32,969 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,972 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,973 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,974 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,975 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,976 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,976 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,977 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,978 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,979 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,979 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,980 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,981 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,982 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,983 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,983 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,984 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,985 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,986 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,987 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,987 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,988 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,990 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,990 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,991 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,992 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,993 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,994 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,995 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,996 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,996 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+2025-05-05 11:05:32,997 ERROR   MainThread:87883 [redirect.py:_on_write():664] [no run ID] error in stderr callback
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/redirect.py", line 662, in _on_write
+    cb(written_data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 2493, in <lambda>
+    lambda data: self._console_raw_callback("stderr", data),
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 406, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 464, in wrapper_fn
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/wandb_run.py", line 1632, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface.py", line 763, in publish_output_raw
+    self._publish_output_raw(o)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_shared.py", line 38, in _publish_output_raw
+    self._publish(rec)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/interface/interface_sock.py", line 39, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 174, in send_record_publish
+    self.send_server_request(server_req)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 154, in send_server_request
+    self._send_message(msg)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 151, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/usr/local/lib/python3.10/dist-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
