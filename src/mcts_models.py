@@ -231,7 +231,7 @@ class LearnedMCTSNode:
         total_N = sum(self.N.values())
         best_action, best_score = None, -float('inf')
         for action, child in self.children.items():
-            U = self.c_puct * child.prior * math.sqrt(total_N) / (1 + self.N[action])
+            U = self.cpuct * child.prior * math.sqrt(total_N) / (1 + self.N[action])
             score = self.Q[action] + U
             if score > best_score:
                 best_score, best_action = score, action
@@ -272,11 +272,17 @@ class MCTSDataset(Dataset):
 
     def __getitem__(self, idx):
         s, pi, z = self.data[idx]
-        return (
-            torch.tensor(s, dtype=torch.float32),
-            torch.tensor(pi, dtype=torch.float32),
-            torch.tensor(z, dtype=torch.float32)
-        )
+        # return (
+        #     torch.tensor(s, dtype=torch.float32),
+        #     torch.tensor(pi, dtype=torch.float32),
+        #     torch.tensor(z, dtype=torch.float32)
+        # )
+        
+        return {
+            'state': torch.tensor(s, dtype=torch.float32),
+            'policy': torch.tensor(pi, dtype=torch.float32),
+            'value': torch.tensor(z, dtype=torch.float32)
+        }
 
     def append(self, state, policy, value):
         if self.max_size and len(self.data) >= self.max_size:

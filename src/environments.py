@@ -79,7 +79,7 @@ class FrozenLakeManipulationEnv(gym.Env):
         return self._get_obs(), reward, success, False, {}
     
     
-class GripperDiscretisedEnv(Env):
+class GripperDiscretisedEnv(gym.Env):
     """Discretized environment for gripper rotating and controlling a cap."""
 
     def __init__(self, angle_steps=18, finger_steps=7):

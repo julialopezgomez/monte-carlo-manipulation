@@ -121,7 +121,7 @@ def self_play_episode(net, make_env, device='cpu', verbose=False):
 
 
 def train_on_batch(batch, net, env, opt, device='cpu'):
-    states, pis, zs = zip(*batch)
+    states, pis, zs = batch['state'], batch['policy'], batch['value']
     nS = env.observation_space.n
 
     # one-hot encode states
@@ -145,38 +145,97 @@ def train(net,
           opt,
           num_episodes=1000,
           batch_size=64,
-          buffer_size=10000,
+          buffer_size=3000,
+          eval_interval=10,
+          num_eval=50,
           num_sims=100,
+          target_sr=0.95,
           cpuct=1.41,
           tau=1.,
           device='cpu',
           verbose=False):
     """Train the network using self-play and MCTS."""
-    env = make_env()
     all_losses = []
-    
+    best_sr = -1.0  # Initialize best win rate
+    env = make_env()
+
     # Initialize dataset and dataloader
     replay_dataset = MCTSDataset(max_size=buffer_size)
-    train_loader = DataLoader(
-        replay_dataset,
-        batch_size=batch_size,
-        shuffle=True,  # Automatically shuffles each epoch
-        num_workers=2  # Parallel data loading (optional)
-    )
 
-    for episode in range(1, num_episodes + 1):
-        # ---- 1) Self-play: Add new data to dataset ----
-        data, z = self_play_episode(net, make_env, device)
-        for s, pi in data:
-            replay_dataset.append(s, pi, z)  # Appends to dataset
+    # Use tqdm for the main episode loop
+    with tqdm(range(1, num_episodes + 1), desc="Training Episodes", unit="episode") as episode_pbar:
+        for episode in episode_pbar:
+            # ---- 1) Self-play: Add new data to dataset ----
+            data, z = self_play_episode(net, make_env, device)
+            for s, pi in data:
+                replay_dataset.append(s, pi, z)  # Appends to dataset
 
-        # ---- 2) Training: Use DataLoader for batches ----
-        for batch in tqdm(train_loader, desc=f"Training (Ep {episode})"):
-            states, policies, values = batch
-            states, policies, values = states.to(device), policies.to(device), values.to(device)
-            
-            # Forward pass and training (replace with your logic)
-            p_loss, v_loss = train_on_batch(states, policies, values, net, opt)
-            all_losses.append((p_loss, v_loss))
+            train_loader = DataLoader(
+                replay_dataset,
+                batch_size=batch_size,
+                shuffle=True,  # Automatically shuffles each epoch
+                num_workers=2, # Set to 0 for simpler debugging, increase for performance
+            )
+            # ---- 2) Training: Use DataLoader for batches ----
+            # tqdm for the training batches within an episode
+            with tqdm(train_loader, desc=f"  Episode {episode} Training", unit="batch", leave=False) as train_pbar:
+                for batch in train_loader:
+                    # Unpack batch
 
+                    # Forward pass and training
+                    p_loss, v_loss = train_on_batch(batch, net, env, opt, device=device)
+                    all_losses.append((p_loss, v_loss))
 
+                    train_pbar.set_postfix(p_loss=f"{p_loss:.4f}", v_loss=f"{v_loss:.4f}")
+                    train_pbar.update() # Manually update as we are inside another tqdm
+
+            # ---- 3) Evaluation
+            # ---- PERIODIC EVALUATION ----
+            if episode % eval_interval == 0:
+                wins = 0
+                # tqdm for the evaluation games
+                with tqdm(range(num_eval), desc=f"  Episode {episode} Evaluation", unit="game", leave=False) as eval_pbar:
+                    for i in range(num_eval):
+                        env = make_env()
+                        state, _ = env.reset()
+                        done = False
+                        while not done:
+                            pi = run_mcts(
+                                state, net,
+                                make_env=make_env,
+                                num_sims=num_sims, cpuct=cpuct, tau=tau,
+                                device=device, verbose=verbose,
+                            )
+                            a = int(np.argmax(pi))
+                            state, reward, term, trunc, _ = env.step(a)
+                            done = term or trunc
+
+                        if reward == 1: # Assuming reward of 1 means a win
+                            wins += 1
+
+                        current_sr = wins / (i + 1)
+                        eval_pbar.set_postfix(wins=f"{wins}/{i+1}", sr=f"{current_sr:.2f}")
+                        eval_pbar.update() # Manually update
+
+                sr = wins / num_eval
+                episode_pbar.write(f"Ep {episode}: eval_sr={sr:.2f} (best={best_sr:.2f})") # Write evaluation result below the main bar
+
+                # checkpoint & report back to the episode bar
+                if sr > best_sr:
+                    best_sr = sr
+                    # torch.save(net.state_dict(), f"models/checkpoint_ep{episode}.pt") # Uncomment to save checkpoints
+                    # print(f"New best model saved at episode {episode} with SR: {best_sr:.2f}") # Optional print
+
+                if sr >= target_sr:
+                    episode_pbar.write(f"Target SR reached at ep {episode} ({sr:.2f})")
+                    break # Exit the main episode loop
+
+            # Update the main episode progress bar description with current status
+            episode_pbar.set_postfix(latest_p_loss=f"{all_losses[-1][0]:.4f}" if all_losses else "N/A",
+                                     latest_v_loss=f"{all_losses[-1][1]:.4f}" if all_losses else "N/A",
+                                     buffer_size=len(replay_dataset),
+                                     best_sr=f"{best_sr:.2f}")
+
+    print("\nTraining finished.")
+    # You might return all_losses or other metrics here
+    return all_losses, best_sr
