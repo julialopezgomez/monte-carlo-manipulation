@@ -9,6 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 from collections import deque, defaultdict, namedtuple
+from environments import FrozenLakeManipulationEnv, GripperDiscretisedEnv
+from data_loading import to_one_hot_encoding
 
 
 # --- MCTS Node Class ---
@@ -133,7 +135,7 @@ class VanillaMCTS:
             
 
 class AlphaZeroNet(nn.Module):
-    def __init__(self, n_states, n_actions, hidden_dim=1024):
+    def __init__(self, n_states, n_actions, hidden_dim=128):
         super().__init__()
         self.fc1 = nn.Linear(n_states, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
@@ -146,136 +148,158 @@ class AlphaZeroNet(nn.Module):
         # x: one-hot or feature vector of shape (batch, n_states)
         h = F.relu(self.fc1(x))
         h = F.relu(self.fc2(h))
-        h = F.relu(self.fc3(h))
         p = F.log_softmax(self.policy_head(h), dim=1)  # log-probs
         v = torch.tanh(self.value_head(h))             # in [-1,1]
         return p, v.squeeze(-1)
     
-# --- MCTS Node Class ---
+    
+    
 class LearnedMCTSNode:
-    def __init__(self,
+    def __init__(self, 
                  state,
                  make_env,
-                 parent=None,
-                 action=None,
+                 net,
+                 parent=None, 
+                 action=None, 
                  prior=0.0,
                  cpuct=1.41,
                  device='cpu',
                  verbose=False):
-
+        
         self.state = state
+        self.parent = parent
+        self.action = action            # action taken to reach this node
+        self.prior = prior              # prior probability of this action
+        self.children = {}
+        
+        self.N = defaultdict(int)       # visit counts per action
+        self.W = defaultdict(float)     # total reward per action
+        self.Q = defaultdict(float)     # average reward per action (Q = W/N)
+        self.reward = 0.0
+        self.terminal = False
+        
+        self.puct_constant = cpuct
+        
         self.make_env = make_env
         self.env = make_env()
-        self.nS = self.env.observation_space.n
-        self.nA = self.env.action_space.n
-        self.parent = parent
-        self.action = action         # action taken to reach this node
-        self.prior   = prior          # P(s,a) from network
-        self.cpuct  = cpuct          # exploration constant
-        self.children= {}             # action → child_node
-        self.N       = defaultdict(int)   # visit counts per child
-        self.W       = defaultdict(float) # total value per child
-        self.Q       = defaultdict(float) # mean value per child
+        self.net = net
         self.device = device
         self.verbose = verbose
 
     def is_leaf(self):
         return len(self.children) == 0
 
-    def expand(self, net):
-        """ Expand the node by evaluating the network on the current state.
-
-        Args:
-            net (AlphaZeroNet): The neural network to evaluate the state.
+    def puct(self):
+        """Calculate the PUCT value for this node.
 
         Returns:
-            value (float): The value of the state from the network.
+            puct_value (float): The PUCT value for this node.
         """
         
+        if self.parent.N[self.action] == 0:
+            return float("inf")
         
-        # get network outputs for this state
-        s_tensor = F.one_hot(torch.tensor([self.state], device=self.device), self.nS).float()
-        s_tensor = s_tensor.to(self.device)
-        logp, value = net(s_tensor)
-        p = logp.exp().detach().cpu().numpy()[0]
+        total_N = sum(self.parent.N.values())
+        
+        exploitation = self.parent.Q[self.action]
+        exploration = self.puct_constant * self.prior * math.sqrt(total_N) / (1 + self.parent.N[self.action])
+        
+        return exploitation + exploration
+        
 
-        # create children with priors
-        for action in range(self.nA):
-            if action not in self.children:
+    def best_puct_child(self):
+        return max(self.children.values(), key=lambda child: child.puct())
 
+    def best_child(self):
+        return max(self.children.values(), key=lambda child: self.Q[child.action])
 
-                # Copy the environment by creating a new instance
-                env_copy = self.make_env()
-                env_copy.reset()
-                env_copy.unwrapped.s = self.state
+    def selection(self):
+        """Traverse the tree to select a promising node to expand.
+        
+        Returns:
+            - node  (MCTSNode): The selected node to expand.
+            - is_goal (bool): True if the node is a goal state.
+        """
+        node = self
+        while not node.is_leaf():
+            node = node.best_puct_child()
+            if self.verbose:
+                print(f"Selected node {node.state} with visits {node.parent.N[node.action]} and value {node.parent.Q[node.action]}")
+        
+        return node
+    
+    
+    def expand(self):
+        """Expand the current node by simulating the environment and adding child nodes.
 
-                # Perform the action in the copied environment
-                obs, reward, terminated, truncated, _ = env_copy.step(action)
+        Returns:
+            child (LearnedMCTSNode): The child node that is a goal state, if any.
+        """
+        
+        # s_tensor = F.one_hot(torch.tensor(self.state), self.env.observation_space.n).float().to(self.device)
+        s_tensor = to_one_hot_encoding(self.state, self.env.observation_space).float().to(self.device)
+            
+        with torch.no_grad():
+            logp, _ = self.net(s_tensor.unsqueeze(0))
+            p = torch.exp(logp).cpu().numpy()[0]
+        
+        for action in range(self.env.action_space.n):
+            env_copy = self.make_env()
+            env_copy.reset()
+            env_copy.unwrapped.s = self.state
+            
+            obs, reward, terminated, truncated, _ = env_copy.step(action)
 
-                # if np.array_equal(obs, self.state):
-                #     # If the state is the same, we don't need to create a new child
-                #     continue
+            # Only add child if it is not a (non successful) terminal state or if it is not the same state
+            # if reward == 0 and terminated or self.state == obs:
+            #     continue
 
-                self.children[action] = LearnedMCTSNode(
-                    state=obs,
-                    make_env=self.make_env,
-                    parent=self,
-                    action=action,
-                    prior=p[action],
-                    cpuct=self.cpuct,
-                    device=self.device,
-                    verbose=self.verbose
-                    )
+            child = LearnedMCTSNode(obs,  
+                                    make_env=self.make_env,
+                                    parent=self,
+                                    action=action, 
+                                    prior=p[action],
+                                    cpuct=self.puct_constant,
+                                    device=self.device,
+                                    net=self.net,
+                                    verbose=self.verbose)
+            
+            self.children[action] = child
 
-                if self.verbose:
-                    print(f"Expanding node {self.state} with action {action} and prior {p[action]}")
-
+            if terminated or obs == self.state:
+                child.terminal = True
+                child.reward = reward if reward == 1 else -1
+                
+            if reward == 1:
+                return child
+            
         if self.verbose:
             print(f"Expanded node {self.state} with children: {[c.state for c in self.children.values()]}")
-            print(f"Node {self.state} has value {value.item()} and policy {p}")
-        return value.item()
+        
+        return None
+    
 
-    def select(self):
-        """ Select the action with the highest Q + U value.
-
+    def evaluation(self):
+        """Evaluate the current node using the neural network.
         Returns:
-            best_action (int): The action with the highest Q + U value.
-            best_child (LearnedMCTSNode): The child node corresponding to the best action.
+            value (float): The value of the current node.
         """
-        total_N = sum(self.N.values())
-        
-        best_action, best_score = None, -float('inf')
-        
-        for action, child in self.children.items():
+        # s_tensor = F.one_hot(torch.tensor(self.state), self.env.observation_space.n).float().to(self.device)
+        s_tensor = to_one_hot_encoding(self.state, self.env.observation_space).float().to(self.device)
+        with torch.no_grad():
+            _, value = self.net(s_tensor.unsqueeze(0))
             
-            U = self.cpuct * child.prior * math.sqrt(total_N) / (1 + self.N[action])
-            score = self.Q[action] + U
-            
-            if score > best_score:
-                best_score, best_action = score, action
+        return value.item() 
 
-        if self.verbose:
-            print(f"Selected action {best_action} with score {best_score} (Q={self.Q[best_action]}, U={U})")
-
-        return best_action, self.children[best_action]
-
-    def backpropagate(self, action, value):
-        """ Backpropagate the value of the simulation to this node.
-
-        Args:
-            action (int): The action taken to reach this node.
-            value (float): The network-predicted value for child node.
-        """
-        self.W[action] += value
-        self.N[action] += 1
-        self.Q[action] = self.W[action] / self.N[action]
-
-        if self.verbose:
-            print(f"Backpropagating value {value} for action {action} in node {self.state}")
-            print(f"Node {self.state} updated: W={self.W[action]}, N={self.N[action]}, Q={self.Q[action]}")
-
+    def backpropagation(self, value):
+        """Propagate the simulation result back up the tree."""
         node = self
-        if node.parent:
-            node.parent.backpropagate(self.action, value)
-            
- 
+        while node:
+            parent = node.parent
+            if parent:
+                parent.N[node.action] += 1
+                parent.W[node.action] += value
+                parent.Q[node.action] = parent.W[node.action] / parent.N[node.action]
+                node = parent
+            else:
+                break 

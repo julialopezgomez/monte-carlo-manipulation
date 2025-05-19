@@ -1,6 +1,8 @@
 import gymnasium as gym
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import datetime
 import math
 import random
 import copy
@@ -10,7 +12,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 from collections import deque, defaultdict
 from tqdm import tqdm
-from mcts_models import LearnedMCTSNode#, MCTSDataset
+from mcts_models import LearnedMCTSNode
+from data_loading import ReplayBuffer, ReplayDataset, to_one_hot_encoding
 from torch.utils.data import DataLoader, Dataset
 
 
@@ -26,230 +29,319 @@ class AlphaLoss(torch.nn.Module):
         return total_error
 
 
-def run_mcts(root_state,
-             net,
-             make_env,
+def run_mcts(root_node,
+             tau=1.0, 
              num_sims=1000,
-             cpuct=1.41,
-             tau=1.,
-             device='cpu',
-             verbose=False):
-
-    root = LearnedMCTSNode(
-                    state=root_state,
-                    make_env=make_env,
-                    cpuct=cpuct,
-                    device=device,
-                    verbose=verbose
-                    )
-
-    # expand root with network evaluation:
-    value = root.expand(net)
-    if verbose:
-        print(f"Root node {root.state} expanded with value {value}")
-
+             pipeline_verbose=False):
+    """Run MCTS simulations from the given node."""
+    
+    root_node.expand()
+    
     for _ in range(num_sims):
-        node = root
+        node = root_node.selection()
 
-        # Selection
-        while not node.is_leaf():
-            prev_node = node
-            action, node = node.select()
-            if verbose:
-                print(f"Selected action {action} for node {prev_node.state} -> {node.state}")
-
-        # Expansion and evaluation with network
-        value = node.expand(net)
-
-        if verbose:
-            print(f"Node {node.state} expanded with value {value}")
-
-        # Backpropagation (up one level)
-        assert node.action == action, f"Expected action {action}, but got {node.action}"
+        if pipeline_verbose:
+            print(f"\nSELECTED NODE: {node.state}, with visits {node.parent.N[node.action]} and value {node.parent.Q[node.action]}\n")
         
-        node.parent.backpropagate(node.action, value)
-
-        if verbose:
-            print(f"Finished backpropagation of value {value} for action {action} in node {node.state}")
-
-    # build visit‐count distribution π
-    counts = np.array([root.N[a] for a in range(root.nA)], dtype=np.float32)
-    # apply temperature
-    counts = counts**(1/tau)
+        if node.terminal:
+            if pipeline_verbose: 
+                print(f"Terminal node reached: {node.parent.state} -> {node.state}, with reward {node.reward}")
+            node.backpropagation(node.reward)
+            continue
+        
+        # Check if the node had been visited before
+        if node.parent.N[node.action] > 0:
+            # If the node has been visited before, expand it
+            goal_node = node.expand()
+            
+            if pipeline_verbose:
+                print(f"\nEXPANDED NODE: {node.state}, with children {[c.state for c in node.children.values()]}")
+        
+            # If the node is a goal state, select it, otherwise select a random child
+            node = goal_node if goal_node is not None else node.best_puct_child()
+            if pipeline_verbose:
+                print(f"selected node {node.state} from children {[c.state for c in node.parent.children.values()]}.")
+                print(f"is goal node: {goal_node is not None}\n")
+            
+            
+        # If the node is a terminal state, use its reward as the value
+        if node.terminal:
+            value = node.reward
+            if pipeline_verbose:
+                print(f"BACKPROPAGATING REWARD: {value} from terminal node {node.state}")
+        else:
+            value = node.evaluation() # get value from NN
+            if pipeline_verbose:
+                print(f"BACKPROPAGATING VALUE: {value} from non-terminal node {node.state}")
+            
+        node.backpropagation(value)
+        
+        
+        
+    counts = np.array([root_node.N[a] for a in range(root_node.env.action_space.n)])
+    
+    counts = counts**(1 / tau)
+    
     pi = counts / counts.sum()
-
-    if verbose:
-        print(f"Visit counts: {root.N}")
-        print(f"Action probabilities: {pi}")
-
+    
     return pi
 
-def self_play_episode(net, make_env, device='cpu', verbose=False):
-    """Run one game of self-play, return list of training tuples (s,π), and z."""
+def self_play_episode(
+    make_env,
+    net,
+    num_sims=100,
+    tau=1.,
+    cpuct=1.41,
+    device='cpu',
+    verbose=False
+):
     data = []
     env = make_env()
-    nA = env.action_space.n
     state, _ = env.reset()
     done = False
-    i = 0
-
+    
     while not done:
-        if verbose:
-            print(f"Step {i}: state {state}")
-
-        # get action probabilities from MCTS
-        if verbose:
-            print(f"Running MCTS for state {state}")
-        pi = run_mcts(state,
-                        net,
-                        make_env=make_env,
-                        num_sims=100,
-                        cpuct=1.41,
-                        tau=1.0,
-                        device=device,
-                        verbose=verbose
-                      )
-
-        if verbose:
-            print(f"Action probabilities: {pi}")
-
-        # store (s,π) pair
+        root_node = LearnedMCTSNode(state=state,
+                                    make_env=make_env,
+                                    net=net,
+                                    cpuct=cpuct,
+                                    device=device,
+                                    verbose=verbose)
+        
+        pi = run_mcts(root_node, tau=tau, num_sims=num_sims)
+        
+        action = np.random.choice(np.arange(len(pi)), p=pi)
+        
+        next_state, reward, terminated, truncated, _ = env.step(action)
+        
         data.append((state, pi))
+        
+        if terminated or truncated:
+            done = True
+            
+        state = next_state
+        
+    return data, reward
 
-        # pick action (you can sample or argmax)
-        action = np.random.choice(nA, p=pi)
-        obs, reward, terminated, truncated, _ = env.step(action)
-        done = terminated or truncated
-        if verbose:
-            print(f"Action {action} taken, new state {state}, reward {reward}")
+def train(net, dataloader, device,
+          optimizer,
+          scheduler,
+          epoch_start=0, epoch_stop=20, cpu=0):
+    """
+    Train the AlphaZero network using MCTS-generated dataset.
 
-            if done:
-                print(f"Game ended with reward {reward}")
+    Args:
+        net: Neural network model.
+        dataset: Training dataset (raw data to be wrapped with board_data).
+        device: torch.device (e.g., 'cuda' or 'cpu').
+        optimizer: torch.optim optimizer (e.g., Adam).
+        scheduler: torch.optim.lr_scheduler instance.
+        epoch_start: Starting epoch index.
+        epoch_stop: Stopping epoch index.
+        cpu: Random seed / CPU identifier.
+    """
+    # Set random seed for reproducibility
+    torch.manual_seed(cpu)
+    net.train()
 
-        # update state
-        state = obs
+    # Use custom loss function
+    criterion = AlphaLoss()
 
-    # z = final reward (0 for fail, 1 for success)
-    z = float(reward)
-    return data, z
+    losses_per_epoch = []
+
+    # Outer progress bar for epochs
+    epoch_bar = tqdm(range(epoch_start, epoch_stop), desc="Epochs", position=0)
+    for epoch in epoch_bar:
+        scheduler.step()  # Step the learning rate scheduler
+
+        total_loss = 0.0
+        losses_per_batch = []
+
+        # Inner progress bar for batches
+        batch_bar = tqdm(enumerate(dataloader, 0),
+                         total=len(dataloader),
+                         desc=f"Epoch {epoch + 1}",
+                         leave=False,
+                         position=1)
+
+        for i, data in batch_bar:
+            state, policy, value = data
+
+            # Move tensors to GPU or CPU
+            state = state.to(device).float()
+            policy = policy.to(device).float()
+            value = value.to(device).float()
+
+            # Forward + backward + optimization step
+            optimizer.zero_grad()
+            policy_pred, value_pred = net(state)
+            loss = criterion(value_pred[:, 0], value, policy_pred, policy)
+            loss.backward()
+            optimizer.step()
+
+            # Track total loss for this batch
+            total_loss += loss.item()
+            batch_bar.set_postfix(loss=loss.item())
+
+            # Periodic logging every 10 batches
+            if i % 10 == 9:
+                avg_loss = total_loss / 10
+                tqdm.write(f'[Epoch {epoch + 1}, Batch {i + 1}] Avg Loss: {avg_loss:.4f}')
+                tqdm.write(f'Policy: GT {policy[0].argmax().item()}, Pred {policy_pred[0].argmax().item()}')
+                tqdm.write(f'Value:  GT {value[0].item()}, Pred {value_pred[0, 0].item()}')
+                losses_per_batch.append(avg_loss)
+                total_loss = 0.0
+
+        # Epoch-level loss tracking
+        if losses_per_batch:
+            epoch_avg_loss = sum(losses_per_batch) / len(losses_per_batch)
+            losses_per_epoch.append(epoch_avg_loss)
+            epoch_bar.set_postfix(avg_epoch_loss=epoch_avg_loss)
+
+        # Early stopping criterion (very conservative)
+        if len(losses_per_epoch) > 100:
+            recent = sum(losses_per_epoch[-4:-1]) / 3
+            earlier = sum(losses_per_epoch[-16:-13]) / 3
+            if abs(recent - earlier) <= 0.01:
+                tqdm.write("Early stopping criterion met.")
+                break
+
+    # Final loss vs. epoch plot
+    fig = plt.figure()
+    ax = fig.add_subplot(222)
+    ax.scatter([e for e in range(1, len(losses_per_epoch) + 1)], losses_per_epoch)
+    ax.set_xlabel("Epoch")
+    ax.set_ylabel("Loss per batch")
+    ax.set_title("Loss vs Epoch")
+    os.makedirs("model_data/", exist_ok=True)
+    plt.savefig(os.path.join("model_data/", f"Loss_vs_Epoch_{datetime.datetime.today().strftime('%Y-%m-%d')}.png"))
+    tqdm.write("Finished Training")
+    
+    
+def evaluate(net, make_env, num_episodes=50, device='cpu'): 
+    """Evaluate the trained model on the environment.
+
+    Args:
+        net: Neural network model.
+        make_env: Function to create a new environment instance.
+        num_episodes: Number of episodes to evaluate.
+
+    Returns:
+        success_rate: Success rate of the model in the environment.
+    """
+    
+    success_count = 0
+    net.eval()
+    
+    with tqdm(total=num_episodes, desc="Evaluating", position=0) as pbar:
+        for episode in range(num_episodes):
+            env = make_env()
+            state, _ = env.reset()
+            
+            node = LearnedMCTSNode(state=state,
+                                    make_env=make_env,
+                                    net=net,
+                                    device=device)
+
+            
+            while not node.is_leaf():
+                logp, _ = net(to_one_hot_encoding(state, env.observation_space).float().to(device).unsqueeze(0))
+                p = torch.exp(logp).cpu().numpy()[0]
+                action = np.random.choice(np.arange(len(p)), p=p)
+                node = node.children[action]
+                
+            if node.terminal and node.reward == 1:
+                success_count += 1
+            
+            pbar.set_postfix(success_rate=success_count / (episode + 1))
+            pbar.update(1)
+            
+            
+    success_rate = success_count / num_episodes
+    
+    return success_rate
 
 
-def train_on_batch(batch, net, env, opt, device='cpu'):
-    states, pis, zs = batch['state'], batch['policy'], batch['value']
-    nS = env.observation_space.n
-
-    # one-hot encode states
-    X = F.one_hot(torch.tensor(states), nS).float()
-
-    target_pi = torch.tensor(pis, dtype=torch.float32, device=device)
-    target_z  = torch.tensor(zs, dtype=torch.float32, device=device)
-
-    opt.zero_grad()
-    logp, v = net(X)
-    loss_p = (-target_pi * logp).sum(dim=1).mean()
-    loss_v = F.mse_loss(v, target_z)
-    loss   = loss_p + loss_v
-    loss.backward()
-    opt.step()
-    return loss_p.item(), loss_v.item()
-
-
-def train(net,
-          make_env,
-          opt,
-          num_episodes=1000,
-          batch_size=64,
-          buffer_size=3000,
-          eval_interval=10,
-          num_eval=50,
-          num_sims=100,
-          target_sr=0.95,
-          cpuct=1.41,
-          tau=1.,
-          device='cpu',
-          verbose=False):
-    """Train the network using self-play and MCTS."""
-    all_losses = []
-    best_sr = -1.0  # Initialize best win rate
+def train_pipeline( net,
+                    make_env,
+                    optimizer,
+                    scheduler,
+                    buffer_size=20000,
+                    sample_size=2048,
+                    batch_size=128,
+                    num_sims=100,
+                    num_epochs=20,
+                    tau=1.0,
+                    cpuct=1.41,
+                    num_episodes=10,
+                    num_self_play=10,
+                    eval_interval=1,
+                    num_eval=200,
+                    target_sr=0.90,
+                    device = 'cpu',
+                    verbose = False):
+    
     env = make_env()
+    best_net = copy.deepcopy(net)
+    
+    replay_buffer = ReplayBuffer(buffer_size=buffer_size,
+                                 sample_size=sample_size)
+    
+    for episode in range(num_episodes):
+        
+        # ------------- Self-play -------------
+        self_play_bar = tqdm(range(num_self_play),
+                            desc=f"Episode {episode+1}/{num_episodes}",
+                            position=0)
 
-    # Initialize dataset and dataloader
-    replay_dataset = MCTSDataset(max_size=buffer_size)
+        for g in self_play_bar:
+            data, reward = self_play_episode(make_env=make_env,
+                                            net=net,
+                                            num_sims=num_sims,
+                                            tau=tau,
+                                            cpuct=cpuct,
+                                            device=device,
+                                            verbose=verbose)
 
-    # Use tqdm for the main episode loop
-    with tqdm(range(1, num_episodes + 1), desc="Training Episodes", unit="episode") as episode_pbar:
-        for episode in episode_pbar:
-            # ---- 1) Self-play: Add new data to dataset ----
-            data, z = self_play_episode(net, make_env, device)
-            for s, pi in data:
-                replay_dataset.append(s, pi, z)  # Appends to dataset
+            for state, pi in data:
+                # Convert state to one-hot encoding
+                replay_buffer.add(state=state,
+                                mcts_policy=pi,
+                                value=reward)
 
-            train_loader = DataLoader(
-                replay_dataset,
-                batch_size=batch_size,
-                shuffle=True,  # Automatically shuffles each epoch
-                num_workers=2, # Set to 0 for simpler debugging, increase for performance
-            )
-            # ---- 2) Training: Use DataLoader for batches ----
-            # tqdm for the training batches within an episode
-            with tqdm(train_loader, desc=f"  Episode {episode} Training", unit="batch", leave=False) as train_pbar:
-                for batch in train_loader:
-                    # Unpack batch
-
-                    # Forward pass and training
-                    p_loss, v_loss = train_on_batch(batch, net, env, opt, device=device)
-                    all_losses.append((p_loss, v_loss))
-
-                    train_pbar.set_postfix(p_loss=f"{p_loss:.4f}", v_loss=f"{v_loss:.4f}")
-                    train_pbar.update() # Manually update as we are inside another tqdm
-
-            # ---- 3) Evaluation
-            # ---- PERIODIC EVALUATION ----
-            if episode % eval_interval == 0:
-                wins = 0
-                # tqdm for the evaluation games
-                with tqdm(range(num_eval), desc=f"  Episode {episode} Evaluation", unit="game", leave=False) as eval_pbar:
-                    for i in range(num_eval):
-                        env = make_env()
-                        state, _ = env.reset()
-                        done = False
-                        while not done:
-                            pi = run_mcts(
-                                state, net,
-                                make_env=make_env,
-                                num_sims=num_sims, cpuct=cpuct, tau=tau,
-                                device=device, verbose=verbose,
-                            )
-                            a = int(np.argmax(pi))
-                            state, reward, term, trunc, _ = env.step(a)
-                            done = term or trunc
-
-                        if reward == 1: # Assuming reward of 1 means a win
-                            wins += 1
-
-                        current_sr = wins / (i + 1)
-                        eval_pbar.set_postfix(wins=f"{wins}/{i+1}", sr=f"{current_sr:.2f}")
-                        eval_pbar.update() # Manually update
-
-                sr = wins / num_eval
-                episode_pbar.write(f"Ep {episode}: eval_sr={sr:.2f} (best={best_sr:.2f})") # Write evaluation result below the main bar
-
-                # checkpoint & report back to the episode bar
-                if sr > best_sr:
-                    best_sr = sr
-                    # torch.save(net.state_dict(), f"models/checkpoint_ep{episode}.pt") # Uncomment to save checkpoints
-                    # print(f"New best model saved at episode {episode} with SR: {best_sr:.2f}") # Optional print
-
-                if sr >= target_sr:
-                    episode_pbar.write(f"Target SR reached at ep {episode} ({sr:.2f})")
-                    break # Exit the main episode loop
-
-            # Update the main episode progress bar description with current status
-            episode_pbar.set_postfix(latest_p_loss=f"{all_losses[-1][0]:.4f}" if all_losses else "N/A",
-                                     latest_v_loss=f"{all_losses[-1][1]:.4f}" if all_losses else "N/A",
-                                     buffer_size=len(replay_dataset),
-                                     best_sr=f"{best_sr:.2f}")
-
-    print("\nTraining finished.")
-    # You might return all_losses or other metrics here
-    return all_losses, best_sr
+            if verbose:
+                tqdm.write(f"Episode {episode+1}. Self-play episode {g+1} finished with reward {reward}. Buffer size: {len(replay_buffer)}")
+            
+            self_play_bar.set_postfix(reward=reward, buffer=len(replay_buffer))
+            
+            
+        # ------------- Training -------------
+        if len(replay_buffer) < batch_size:
+            continue
+        
+        net.train()
+        
+        experiences = replay_buffer.sample(batch_size)
+        dataset = ReplayDataset(experiences, obs_space=env.observation_space)
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        
+        # Train the network
+        train(net=net,
+              dataloader=dataloader,
+              device=device,
+              optimizer=optimizer,
+              scheduler=scheduler,
+              epoch_start=0, 
+              epoch_stop=num_epochs,
+              cpu=0)
+        
+        # ------------- Evaluation -------------
+        if (episode + 1) % eval_interval == 0:
+            success_rate = evaluate(net, make_env, num_episodes=num_eval, device=device)
+            print(f"Episode {episode+1}. Success rate: {success_rate:.2f}")
+            
+            # Save the best model
+            if success_rate >= target_sr:
+                best_net = copy.deepcopy(net)
+                torch.save(best_net.state_dict(), os.path(f"models/best_model_{episode+1}.pth"))
+                print(f"Best model saved at episode {episode+1}.")
