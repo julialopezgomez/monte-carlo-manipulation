@@ -13,6 +13,19 @@ from tqdm import tqdm
 from mcts_models import LearnedMCTSNode#, MCTSDataset
 from torch.utils.data import DataLoader, Dataset
 
+
+class AlphaLoss(torch.nn.Module):
+    def __init__(self):
+        super(AlphaLoss, self).__init__()
+
+    def forward(self, y_value, value, y_policy, policy):
+        value_error = (value - y_value) ** 2
+        policy_error = torch.sum((-policy* 
+                                (1e-6 + y_policy.float()).float().log()), 1)
+        total_error = (value_error.view(-1).float() + policy_error).mean()
+        return total_error
+
+
 def run_mcts(root_state,
              net,
              make_env,
