@@ -181,6 +181,7 @@ def train(net, dataloader, device,
 
             # Track total loss for this batch
             total_loss += loss.item()
+            print(f"Batch {i+1}/{len(dataloader)}: Loss = {loss.item():.4f}")
             batch_bar.set_postfix(loss=loss.item())
 
             # Periodic logging every 10 batches
