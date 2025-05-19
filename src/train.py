@@ -247,7 +247,7 @@ def evaluate(net, make_env, num_episodes=50, device='cpu'):
             while not node.is_leaf():
                 logp, _ = net(to_one_hot_encoding(state, env.observation_space).float().to(device).unsqueeze(0))
                 p = torch.exp(logp).cpu().numpy()[0]
-                action = np.random.choice(np.arange(len(p)), p=p)
+                action = np.argmax(p)
                 node = node.children[action]
                 
             if node.terminal and node.reward == 1:
