@@ -91,7 +91,7 @@ class GripperDiscretisedEnv(gym.Env):
         self.gripper_min_width = -0.055
         self.gripper_max_width = -0.025
         
-        self.n_states = 42/2
+        self.n_states = 21
 
         # Define the action space: rotate+/-, open/close gripper
         self.action_space = spaces.Discrete(4)

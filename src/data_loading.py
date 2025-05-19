@@ -30,13 +30,13 @@ def to_one_hot_encoding(state, obs_space):
         nvec = obs_space.nvec.tolist()
         parts = []
         for i, (val, n) in enumerate(zip(arr, nvec)):
-            # if i == len(nvec) - 1:
-            #     # final dimension: binary 0/1 pass-through
-            #     parts.append(torch.tensor([val], dtype=torch.float32))
-            # else:
-        # discrete var → one-hot
-            idx = torch.tensor(val, dtype=torch.long)
-            parts.append(F.one_hot(idx, num_classes=n).float())
+            if n == 2:
+                # final dimension: binary 0/1 pass-through
+                parts.append(torch.tensor([val], dtype=torch.float32))
+            else:
+            # discrete var → one-hot
+                idx = torch.tensor(val, dtype=torch.long)
+                parts.append(F.one_hot(idx, num_classes=n).float())
                 
         print("torch cat parts", parts)
         return torch.cat(parts, dim=0)
