@@ -2,6 +2,118 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import time
+from pydrake.all import (
+    DiagramBuilder, AddMultibodyPlantSceneGraph, Parser, RigidTransform, RotationMatrix,
+    Role, MeshcatVisualizer, StartMeshcat, RationalForwardKinematics, CspaceFreePolytope,
+    SeparatingPlaneOrder, Rgba, InverseKinematics,
+    LinearEqualityConstraint, Sphere, Parallelism, AddDefaultVisualization, 
+    ConnectPlanarSceneGraphVisualizer, IrisFromCliqueCoverOptions, 
+    IrisInConfigurationSpaceFromCliqueCover, RandomGenerator, RobotDiagramBuilder, 
+    SceneGraphCollisionChecker, MultibodyPlant, SceneGraph, 
+    SolverOptions, CommonSolverOption, GeometrySet, ScsSolver
+)
+from pydrake.geometry.optimization import GraphOfConvexSetsOptions, HPolyhedron, VPolytope, Point, Hyperellipsoid
+from pydrake.geometry.optimization import ConvexHull as DrakeConvexHull
+from pydrake.planning import GcsTrajectoryOptimization
+from pydrake.solvers import MathematicalProgram, Solve, MosekSolver
+from pydrake.trajectories import CompositeTrajectory
+from scipy.spatial import ConvexHull
+import mcubes
+from functools import partial
+import matplotlib.pyplot as plt
+from ipywidgets import widgets
+
+
+from gymnasium import Env, spaces
+import gymnasium as gym
+import math
+import random
+
+
+from utils.ciris_plant_visualizer import CIrisPlantVisualizer
+
+# Replace DiagramBuilder with RobotDiagramBuilder
+builder = RobotDiagramBuilder(time_step=0.0)
+plant = builder.plant()
+scene_graph = builder.scene_graph()
+parser = Parser(plant, scene_graph)
+parser.SetAutoRenaming(True)
+
+# Add the robot
+gripper = parser.AddModels(file_name="my_sdfs/wsg_3dof.sdf")[0]
+cap = parser.AddModels(file_name="my_sdfs/bottle_cap.sdf")[0]
+obstacle1 = parser.AddModels("my_sdfs/obstacle.sdf")[0]
+# obstacle2 = parser.AddModels("my_sdfs/obstacle.sdf")[0]
+# obstacle3 = parser.AddModels("my_sdfs/obstacle.sdf")[0]
+
+# Set welds
+plant.WeldFrames(
+    plant.world_frame(), 
+    plant.GetFrameByName("base_link", cap),
+    RigidTransform(RotationMatrix(), [0, 0, 0]))
+
+# Weld the obstacle to the world frame (adjust pose as needed)
+obstacle_pose1 = RigidTransform(RotationMatrix(), [0.01, 0.035, 0.02])  # Adjust position
+plant.WeldFrames(
+    plant.world_frame(),
+    plant.GetFrameByName("obstacle_link", obstacle1),
+    obstacle_pose1)
+
+# obstacle_pose2 = RigidTransform(RotationMatrix(), [-0.01, 0.035, 0.02])  # Adjust position
+# plant.WeldFrames(
+#     plant.world_frame(),
+#     plant.GetFrameByName("obstacle_link", obstacle2),
+#     obstacle_pose2)
+
+# obstacle_pose3 = RigidTransform(RotationMatrix(), [-0.035, -0.005, 0.02])  # Adjust position
+# plant.WeldFrames(
+#     plant.world_frame(),
+#     plant.GetFrameByName("obstacle_link", obstacle3),
+#     obstacle_pose3)
+
+p_GgraspO = [0, 0, .065]
+R_GgraspO = RotationMatrix.MakeXRotation(-np.pi / 2)
+plant.WeldFrames(
+    plant.world_frame(),
+    plant.GetFrameByName("base_wsg", gripper),
+    RigidTransform(R_GgraspO, p_GgraspO))
+
+# Fix right finger to left finger
+right_finger_joint = plant.GetJointByName("right_finger_sliding_joint", gripper)
+left_finger_joint = plant.GetJointByName("left_finger_sliding_joint", gripper)
+
+# Set default joint translation to 0.025
+# right_finger_joint.set_default_translation(0.025)
+left_finger_joint.set_default_translation(-0.025)
+
+plant.Finalize()
+
+print("Number of positions: ", plant.num_positions())
+
+# Cell 3: Initialize the CIrisPlantVisualizer
+q_star = np.zeros(plant.num_positions())
+
+# The object we will use to perform our certification
+cspace_free_polytope = CspaceFreePolytope(
+    plant, 
+    scene_graph,
+    SeparatingPlaneOrder.kAffine,
+    q_star)
+
+visualizer = CIrisPlantVisualizer(
+    plant,
+    builder,
+    scene_graph,
+    cspace_free_polytope,
+    viz_role=Role.kIllustration,
+    allow_plus_3dof=True
+)
+
+
+visualizer.task_space_diagram.ForcedPublish(visualizer.task_space_diagram_context)
+
 
 
 class FrozenLakeManipulationEnv(gym.Env):
@@ -155,6 +267,7 @@ class GripperDiscretisedEnv(gym.Env):
             convert_angle_to_radians(self._idx_to_angle(self.cap_angle_idx)),
             convert_angle_to_radians(self._idx_to_angle(self.gripper_angle_idx)),
             self._idx_to_width(self.gripper_width_idx),
+            -self._idx_to_width(self.gripper_width_idx)
         ])
         
         if collision:

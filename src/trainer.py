@@ -37,7 +37,7 @@ def parse_args():
     parser.add_argument("--tau",         type=float, default=1.0,
                         help="Temperature for π = N^(1/τ)")
     # Training params
-    parser.add_argument("--batch-size",  type=int,   default=128,
+    parser.add_argument("--batch-size",  type=int,   default=64,
                         help="Batch size for optimizer")
     parser.add_argument("--lr",          type=float, default=1e-3,
                         help="Learning rate")
@@ -117,9 +117,6 @@ def main():
     if isinstance(env.observation_space, Discrete):
         nS = env.observation_space.n
     else:
-        # Assuming the observation space is a tuple of (states, ..., states, holding/not_holding) 
-        print(f"len(env.observation_space.sample()): {len(env.observation_space.sample())}")
-        print(f"int((len(env.observation_space.sample()) - 1) * env.n_states): {(len(env.observation_space.sample()) - 1) * env.n_states}")
         nS = int((len(env.observation_space.sample()) - 1) * env.n_states) + 1
     net    = AlphaZeroNet(nS, nA).to(device)
     optimizer   = optim.Adam(net.parameters(), lr=LR, weight_decay=REGULARIZATION)

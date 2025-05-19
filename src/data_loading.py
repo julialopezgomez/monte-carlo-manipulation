@@ -38,7 +38,6 @@ def to_one_hot_encoding(state, obs_space):
                 idx = torch.tensor(val, dtype=torch.long)
                 parts.append(F.one_hot(idx, num_classes=n).float())
                 
-        print("torch cat parts", parts)
         return torch.cat(parts, dim=0)
 
     raise TypeError(f"Unsupported space: {type(obs_space)}")

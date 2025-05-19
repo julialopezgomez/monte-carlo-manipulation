@@ -6,7 +6,7 @@ from pydrake.all import (HPolyhedron, AngleAxis,
                          Hyperellipsoid, Simulator, Box)
 import mcubes
 
-import visualization_utils as viz_utils
+import utils.visualization_utils as viz_utils
 
 import pydrake.symbolic as sym
 from pydrake.all import MeshcatVisualizer, StartMeshcat, DiagramBuilder, \
