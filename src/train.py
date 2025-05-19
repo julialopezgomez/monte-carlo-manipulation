@@ -361,8 +361,9 @@ def train_pipeline( net,
             success_rate = evaluate(net, make_env, num_episodes=num_eval, device=device)
             print(f"Episode {episode+1}. Success rate: {success_rate:.2f}")
             
-            # Save the best model
+            # Save the best model and stop
             if success_rate >= target_sr:
                 best_net = copy.deepcopy(net)
                 torch.save(best_net.state_dict(), os.path.join("models/", f"best_model_{episode+1}.pth"))
                 print(f"Best model saved at episode {episode+1}.")
+                break
