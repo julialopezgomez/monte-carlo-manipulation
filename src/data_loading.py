@@ -23,7 +23,7 @@ def to_one_hot_encoding(state, obs_space):
     if isinstance(obs_space, Discrete):
         # single discrete var → one-hot
         idx = torch.tensor(state, dtype=torch.long)
-        return F.one_hot(idx, num_classes=obs_space.n).float()
+        return F.one_hot(idx, num_classes=int(obs_space.n)).float()
 
     if isinstance(obs_space, MultiDiscrete):
         arr = list(state)
