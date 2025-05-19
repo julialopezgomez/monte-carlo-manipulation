@@ -8,7 +8,7 @@ import gymnasium as gym
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
-from collections import deque, defaultdict
+from collections import deque, defaultdict, namedtuple
 
 
 # --- MCTS Node Class ---
@@ -133,11 +133,10 @@ class VanillaMCTS:
             
 
 class AlphaZeroNet(nn.Module):
-    def __init__(self, n_states, n_actions, hidden_dim=256):
+    def __init__(self, n_states, n_actions, hidden_dim=1024):
         super().__init__()
         self.fc1 = nn.Linear(n_states, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc3 = nn.Linear(hidden_dim, hidden_dim)
         # policy head
         self.policy_head = nn.Linear(hidden_dim, n_actions)
         # value head
@@ -184,6 +183,16 @@ class LearnedMCTSNode:
         return len(self.children) == 0
 
     def expand(self, net):
+        """ Expand the node by evaluating the network on the current state.
+
+        Args:
+            net (AlphaZeroNet): The neural network to evaluate the state.
+
+        Returns:
+            value (float): The value of the state from the network.
+        """
+        
+        
         # get network outputs for this state
         s_tensor = F.one_hot(torch.tensor([self.state], device=self.device), self.nS).float()
         s_tensor = s_tensor.to(self.device)
@@ -223,16 +232,25 @@ class LearnedMCTSNode:
 
         if self.verbose:
             print(f"Expanded node {self.state} with children: {[c.state for c in self.children.values()]}")
-            print(f"Node {self.state} has value {value.item()} and prior {p}")
+            print(f"Node {self.state} has value {value.item()} and policy {p}")
         return value.item()
 
     def select(self):
-        # pick action that maximizes Q + U
+        """ Select the action with the highest Q + U value.
+
+        Returns:
+            best_action (int): The action with the highest Q + U value.
+            best_child (LearnedMCTSNode): The child node corresponding to the best action.
+        """
         total_N = sum(self.N.values())
+        
         best_action, best_score = None, -float('inf')
+        
         for action, child in self.children.items():
+            
             U = self.cpuct * child.prior * math.sqrt(total_N) / (1 + self.N[action])
             score = self.Q[action] + U
+            
             if score > best_score:
                 best_score, best_action = score, action
 
@@ -260,38 +278,4 @@ class LearnedMCTSNode:
         if node.parent:
             node.parent.backpropagate(self.action, value)
             
-            
-            
-class MCTSDataset(Dataset):
-    def __init__(self, max_size=None):
-        self.data = []  # Stores (state, policy, value) tuples
-        self.max_size = max_size  # Optional: Limit dataset size
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        s, pi, z = self.data[idx]
-        # return (
-        #     torch.tensor(s, dtype=torch.float32),
-        #     torch.tensor(pi, dtype=torch.float32),
-        #     torch.tensor(z, dtype=torch.float32)
-        # )
-        
-        return {
-            'state': torch.tensor(s, dtype=torch.float32),
-            'policy': torch.tensor(pi, dtype=torch.float32),
-            'value': torch.tensor(z, dtype=torch.float32)
-        }
-
-    def append(self, state, policy, value):
-        if self.max_size and len(self.data) >= self.max_size:
-            # remove the oldest sample which z is not > 0
-            i = 0
-            while i < len(self.data) and self.data[i][2] > 0:
-                i += 1
-            if i < len(self.data):
-                self.data.pop(i)
-            else:
-                self.data.pop(0)
-        self.data.append((state, policy, value))
+ 

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 class FrozenLakeManipulationEnv(gym.Env):
     """Custom GridWorld environment with an agent and movable box."""
     
-    def __init__(self, grid_size=4, agent_start=0, box_start=1, goal_agent=13, goal_box=15, holes=None):
+    def __init__(self, grid_size=4, agent_start=0, box_start=1, goal_agent=15, goal_box=15, holes=None):
         super().__init__()
         self.grid_size = grid_size
         self.n_states = grid_size * grid_size
@@ -50,13 +50,11 @@ class FrozenLakeManipulationEnv(gym.Env):
     def step(self, action):
         if action in [0, 1, 2, 3]:  # movement
             new_pos = self._move(self.agent_pos, action)
-            if new_pos in self.holes:
-                return self._get_obs(), 0.0, True, False, {}
+            if new_pos in self.holes or new_pos == self.agent_pos:
+                return self._get_obs(), -1.0, True, False, {}
+            self.agent_pos = new_pos
             if self.holding:
-                self.agent_pos = new_pos
                 self.box_pos = new_pos
-            else:
-                self.agent_pos = new_pos
 
         elif action == 4:  # grab
             if self.agent_pos == self.box_pos:
@@ -67,7 +65,7 @@ class FrozenLakeManipulationEnv(gym.Env):
 
         # If agent or box is in a hole, terminate
         if self.agent_pos in self.holes or self.box_pos in self.holes:
-            return self._get_obs(), 0.0, True, False, {}
+            return self._get_obs(), -1.0, True, False, {}
 
         # Check goal condition
         success = (
@@ -158,6 +156,6 @@ class GripperDiscretisedEnv(gym.Env):
         ])
         
         if collision:
-            return self._get_obs(), 0.0, False, True, {}
+            return self._get_obs(), -1.0, False, True, {}
 
         return self._get_obs(), reward, success, False, {}

@@ -10,7 +10,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from collections import deque, defaultdict
 from tqdm import tqdm
-from mcts_models import LearnedMCTSNode, MCTSDataset
+from mcts_models import LearnedMCTSNode#, MCTSDataset
 from torch.utils.data import DataLoader, Dataset
 
 def run_mcts(root_state,
@@ -53,6 +53,7 @@ def run_mcts(root_state,
 
         # Backpropagation (up one level)
         assert node.action == action, f"Expected action {action}, but got {node.action}"
+        
         node.parent.backpropagate(node.action, value)
 
         if verbose:
