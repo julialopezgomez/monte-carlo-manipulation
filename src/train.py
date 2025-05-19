@@ -152,7 +152,6 @@ def train(net, dataloader, device,
     # Outer progress bar for epochs
     epoch_bar = tqdm(range(epoch_start, epoch_stop), desc="Epochs", position=0)
     for epoch in epoch_bar:
-        scheduler.step()  # Step the learning rate scheduler
 
         total_loss = 0.0
         losses_per_batch = []
@@ -175,9 +174,10 @@ def train(net, dataloader, device,
             # Forward + backward + optimization step
             optimizer.zero_grad()
             policy_pred, value_pred = net(state)
-            loss = criterion(value_pred[:, 0], value, policy_pred, policy)
+            loss = criterion(value_pred, value, policy_pred, policy)
             loss.backward()
-            optimizer.step()
+            optimizer.step() 
+            scheduler.step()  # Step the learning rate scheduler
 
             # Track total loss for this batch
             total_loss += loss.item()
@@ -321,7 +321,7 @@ def train_pipeline( net,
         
         net.train()
         
-        experiences = replay_buffer.sample(batch_size)
+        experiences = replay_buffer.sample()
         dataset = ReplayDataset(experiences, obs_space=env.observation_space)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         
