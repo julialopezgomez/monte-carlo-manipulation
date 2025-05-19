@@ -135,10 +135,11 @@ class VanillaMCTS:
             
 
 class AlphaZeroNet(nn.Module):
-    def __init__(self, n_states, n_actions, hidden_dim=128):
+    def __init__(self, n_states, n_actions, hidden_dim=1024):
         super().__init__()
         self.fc1 = nn.Linear(n_states, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+        self.fc3 = nn.Linear(hidden_dim, hidden_dim)
         # policy head
         self.policy_head = nn.Linear(hidden_dim, n_actions)
         # value head
@@ -148,6 +149,7 @@ class AlphaZeroNet(nn.Module):
         # x: one-hot or feature vector of shape (batch, n_states)
         h = F.relu(self.fc1(x))
         h = F.relu(self.fc2(h))
+        h = F.relu(self.fc3(h))
         p = F.log_softmax(self.policy_head(h), dim=1)  # log-probs
         v = torch.tanh(self.value_head(h))             # in [-1,1]
         return p, v.squeeze(-1)
