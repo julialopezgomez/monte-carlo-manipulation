@@ -36,6 +36,7 @@ class AlphaLoss(torch.nn.Module):
 
         # Total loss (weighted sum, equal weights here)
         total_error = value_loss + policy_loss
+        print(f"Value loss: {value_loss.item()}, Policy loss: {policy_loss.item()}")    
         return total_error
 
 
@@ -196,9 +197,6 @@ def train(net, dataloader, device,
             # Periodic logging every 10 batches
             if i % 10 == 9:
                 avg_loss = total_loss / 10
-                tqdm.write(f'[Epoch {epoch + 1}, Batch {i + 1}] Avg Loss: {avg_loss:.4f}')
-                tqdm.write(f'Policy: GT {policy[0].argmax().item()}, Pred {policy_pred[0].argmax().item()}')
-                tqdm.write(f'Value:  GT {value[0].item()}, Pred {value_pred[0].item()}')
                 losses_per_batch.append(avg_loss)
                 total_loss = 0.0
 

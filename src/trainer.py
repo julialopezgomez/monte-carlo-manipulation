@@ -28,9 +28,9 @@ def parse_args():
     # MCTS / AlphaZero params
     parser.add_argument("--num-sims",    type=int,   default=5000,
                         help="MCTS simulations per self-play step")
-    parser.add_argument("--num-self-play", type=int, default=10,
+    parser.add_argument("--num-self-play", type=int, default=8,
                         help="Self-play games to generate per epoch")
-    parser.add_argument("--num-epochs",  type=int,   default=10,
+    parser.add_argument("--num-epochs",  type=int,   default=20,
                         help="Number of training epochs")
     parser.add_argument("--cpuct",       type=float, default=1.41,
                         help="PUCT exploration constant")
@@ -118,7 +118,9 @@ def main():
         nS = env.observation_space.n
     else:
         # Assuming the observation space is a tuple of (states, ..., states, holding/not_holding) 
-        nS = (len(env.observation_space.sample()) - 1) * env.n_states + 1
+        print(f"len(env.observation_space.sample()): {len(env.observation_space.sample())}")
+        print(f"int((len(env.observation_space.sample()) - 1) * env.n_states): {(len(env.observation_space.sample()) - 1) * env.n_states}")
+        nS = int((len(env.observation_space.sample()) - 1) * env.n_states) + 1
     net    = AlphaZeroNet(nS, nA).to(device)
     optimizer   = optim.Adam(net.parameters(), lr=LR, weight_decay=REGULARIZATION)
     scheduler   = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=10)
