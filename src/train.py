@@ -22,10 +22,20 @@ class AlphaLoss(torch.nn.Module):
         super(AlphaLoss, self).__init__()
 
     def forward(self, y_value, value, y_policy, policy):
-        value_error = (value - y_value) ** 2
-        policy_error = torch.sum((-policy* 
-                                (1e-6 + y_policy.float()).float().log()), 1)
-        total_error = (value_error.view(-1).float() + policy_error).mean()
+        # value_error = (value - y_value) ** 2
+        # policy_error = torch.sum((-policy* 
+        #                         (1e-6 + y_policy.float()).float().log()), 1)
+        # total_error = value_error + policy_error
+        
+        
+        # Value loss (MSE)
+        value_loss = F.mse_loss(y_value, value)
+
+        # Policy loss (cross-entropy from log-prob to soft target)
+        policy_loss = -(policy * y_policy).sum(dim=1).mean()
+
+        # Total loss (weighted sum, equal weights here)
+        total_error = value_loss + policy_loss
         return total_error
 
 
@@ -189,7 +199,7 @@ def train(net, dataloader, device,
                 avg_loss = total_loss / 10
                 tqdm.write(f'[Epoch {epoch + 1}, Batch {i + 1}] Avg Loss: {avg_loss:.4f}')
                 tqdm.write(f'Policy: GT {policy[0].argmax().item()}, Pred {policy_pred[0].argmax().item()}')
-                tqdm.write(f'Value:  GT {value[0].item()}, Pred {value_pred[0, 0].item()}')
+                tqdm.write(f'Value:  GT {value[0].item()}, Pred {value_pred[0].item()}')
                 losses_per_batch.append(avg_loss)
                 total_loss = 0.0
 
@@ -244,15 +254,40 @@ def evaluate(net, make_env, num_episodes=50, device='cpu'):
                                     net=net,
                                     device=device)
 
+            done = False
             
-            while not node.is_leaf():
+            while not done:
+                # Run MCTS to get the policy
                 logp, _ = net(to_one_hot_encoding(state, env.observation_space).float().to(device).unsqueeze(0))
                 p = torch.exp(logp).cpu().numpy()[0]
+                print(f"State: {node.state}, Policy: {p}")
                 action = np.argmax(p)
-                node = node.children[action]
+                print(f"Action: {action}")
+                next_state, reward, terminated, truncated, _ = env.step(action)
+                node = LearnedMCTSNode(state=next_state,
+                                        make_env=make_env,
+                                        net=net,
+                                        parent=node,
+                                        action=action,
+                                        prior = p[action],
+                                        device=device)
                 
-            if node.terminal and node.reward == 1:
+                done = terminated or truncated
+                state = next_state
+                print(f"Next state: {state}, Reward: {reward}, Done: {done}")
+            # Check if the episode was successful
+            if reward == 1:
                 success_count += 1
+                print(f"Episode {episode + 1} succeeded!")
+            
+            # while not node.is_leaf():
+            #     logp, _ = net(to_one_hot_encoding(state, env.observation_space).float().to(device).unsqueeze(0))
+            #     p = torch.exp(logp).cpu().numpy()[0]
+            #     action = np.argmax(p)
+            #     print(f"State: {node.state}, Policy: {p}, Action: {action}")
+            #     node = node.children[action]
+            # if node.terminal and node.reward == 1:
+            #     success_count += 1
             
             pbar.set_postfix(success_rate=success_count / (episode + 1))
             pbar.update(1)
