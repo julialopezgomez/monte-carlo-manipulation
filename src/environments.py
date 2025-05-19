@@ -4,26 +4,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import time
-from pydrake.all import (
-    DiagramBuilder, AddMultibodyPlantSceneGraph, Parser, RigidTransform, RotationMatrix,
-    Role, MeshcatVisualizer, StartMeshcat, RationalForwardKinematics, CspaceFreePolytope,
-    SeparatingPlaneOrder, Rgba, InverseKinematics,
-    LinearEqualityConstraint, Sphere, Parallelism, AddDefaultVisualization, 
-    ConnectPlanarSceneGraphVisualizer, IrisFromCliqueCoverOptions, 
-    IrisInConfigurationSpaceFromCliqueCover, RandomGenerator, RobotDiagramBuilder, 
-    SceneGraphCollisionChecker, MultibodyPlant, SceneGraph, 
-    SolverOptions, CommonSolverOption, GeometrySet, ScsSolver
-)
-from pydrake.geometry.optimization import GraphOfConvexSetsOptions, HPolyhedron, VPolytope, Point, Hyperellipsoid
-from pydrake.geometry.optimization import ConvexHull as DrakeConvexHull
-from pydrake.planning import GcsTrajectoryOptimization
-from pydrake.solvers import MathematicalProgram, Solve, MosekSolver
-from pydrake.trajectories import CompositeTrajectory
-from scipy.spatial import ConvexHull
-import mcubes
-from functools import partial
-import matplotlib.pyplot as plt
-from ipywidgets import widgets
+try:
+    from pydrake.all import (
+        DiagramBuilder, AddMultibodyPlantSceneGraph, Parser, RigidTransform, RotationMatrix,
+        Role, MeshcatVisualizer, StartMeshcat, RationalForwardKinematics, CspaceFreePolytope,
+        SeparatingPlaneOrder, Rgba, InverseKinematics,
+        LinearEqualityConstraint, Sphere, Parallelism, AddDefaultVisualization, 
+        ConnectPlanarSceneGraphVisualizer, IrisFromCliqueCoverOptions, 
+        IrisInConfigurationSpaceFromCliqueCover, RandomGenerator, RobotDiagramBuilder, 
+        SceneGraphCollisionChecker, MultibodyPlant, SceneGraph, 
+        SolverOptions, CommonSolverOption, GeometrySet, ScsSolver
+    )
+    from pydrake.geometry.optimization import GraphOfConvexSetsOptions, HPolyhedron, VPolytope, Point, Hyperellipsoid
+    from pydrake.geometry.optimization import ConvexHull as DrakeConvexHull
+    from pydrake.planning import GcsTrajectoryOptimization
+    from pydrake.solvers import MathematicalProgram, Solve, MosekSolver
+    from pydrake.trajectories import CompositeTrajectory
+    
+    from scipy.spatial import ConvexHull
+    import mcubes
+    from functools import partial
+    import matplotlib.pyplot as plt
+    from ipywidgets import widgets
+except ImportError:
+    print("pydrake is not installed. install if you want to use gripper environment")
+    raise
 
 
 from gymnasium import Env, spaces

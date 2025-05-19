@@ -26,7 +26,7 @@ def parse_args():
     
     
     # MCTS / AlphaZero params
-    parser.add_argument("--num-sims",    type=int,   default=5000,
+    parser.add_argument("--num-sims",    type=int,   default=10000,
                         help="MCTS simulations per self-play step")
     parser.add_argument("--num-self-play", type=int, default=8,
                         help="Self-play games to generate per epoch")
