@@ -191,7 +191,6 @@ def train(net, dataloader, device,
 
             # Track total loss for this batch
             total_loss += loss.item()
-            print(f"Batch {i+1}/{len(dataloader)}: Loss = {loss.item():.4f}")
             batch_bar.set_postfix(loss=loss.item())
 
             # Periodic logging every 10 batches
@@ -226,7 +225,6 @@ def train(net, dataloader, device,
     ax.set_title("Loss vs Epoch")
     os.makedirs("model_data/", exist_ok=True)
     plt.savefig(os.path.join("model_data/", f"Loss_vs_Epoch_{datetime.datetime.today().strftime('%Y-%m-%d')}.png"))
-    tqdm.write("Finished Training")
     
     
 def evaluate(net, make_env, num_episodes=50, device='cpu'): 
@@ -259,10 +257,8 @@ def evaluate(net, make_env, num_episodes=50, device='cpu'):
             while not done:
                 # Run MCTS to get the policy
                 logp, _ = net(to_one_hot_encoding(state, env.observation_space).float().to(device).unsqueeze(0))
-                p = torch.exp(logp).cpu().numpy()[0]
-                print(f"State: {node.state}, Policy: {p}")
+                p = torch.exp(logp).cpu().detach().numpy()[0]
                 action = np.argmax(p)
-                print(f"Action: {action}")
                 next_state, reward, terminated, truncated, _ = env.step(action)
                 node = LearnedMCTSNode(state=next_state,
                                         make_env=make_env,
@@ -274,20 +270,9 @@ def evaluate(net, make_env, num_episodes=50, device='cpu'):
                 
                 done = terminated or truncated
                 state = next_state
-                print(f"Next state: {state}, Reward: {reward}, Done: {done}")
             # Check if the episode was successful
             if reward == 1:
                 success_count += 1
-                print(f"Episode {episode + 1} succeeded!")
-            
-            # while not node.is_leaf():
-            #     logp, _ = net(to_one_hot_encoding(state, env.observation_space).float().to(device).unsqueeze(0))
-            #     p = torch.exp(logp).cpu().numpy()[0]
-            #     action = np.argmax(p)
-            #     print(f"State: {node.state}, Policy: {p}, Action: {action}")
-            #     node = node.children[action]
-            # if node.terminal and node.reward == 1:
-            #     success_count += 1
             
             pbar.set_postfix(success_rate=success_count / (episode + 1))
             pbar.update(1)
@@ -379,5 +364,5 @@ def train_pipeline( net,
             # Save the best model
             if success_rate >= target_sr:
                 best_net = copy.deepcopy(net)
-                torch.save(best_net.state_dict(), os.path(f"models/best_model_{episode+1}.pth"))
+                torch.save(best_net.state_dict(), os.path.join("models/", f"best_model_{episode+1}.pth"))
                 print(f"Best model saved at episode {episode+1}.")
