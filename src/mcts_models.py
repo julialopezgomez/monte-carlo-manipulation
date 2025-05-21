@@ -9,7 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 from collections import deque, defaultdict, namedtuple
-from environments import FrozenLakeManipulationEnv, GripperDiscretisedEnv
+from environments.gripper_environment import GripperDiscretisedEnv
+from environments.frozen_lake_manipulation_environment import FrozenLakeManipulationEnv
 from data_loading import to_one_hot_encoding
 
 

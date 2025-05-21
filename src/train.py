@@ -36,7 +36,6 @@ class AlphaLoss(torch.nn.Module):
 
         # Total loss (weighted sum, equal weights here)
         total_error = value_loss + policy_loss
-        print(f"Value loss: {value_loss.item()}, Policy loss: {policy_loss.item()}")    
         return total_error
 
 

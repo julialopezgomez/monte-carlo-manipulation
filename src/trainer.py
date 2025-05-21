@@ -15,7 +15,8 @@ from torch.utils.data import DataLoader, Dataset
 from collections import deque, defaultdict
 from tqdm import tqdm
 from train import AlphaLoss, train_pipeline
-from environments import FrozenLakeManipulationEnv, GripperDiscretisedEnv
+from environments.gripper_environment import GripperDiscretisedEnv
+from environments.frozen_lake_manipulation_environment import FrozenLakeManipulationEnv
 from data_loading import to_one_hot_encoding, ReplayBuffer, ReplayDataset
 from mcts_models import MCTSNode, LearnedMCTSNode, AlphaZeroNet
 import argparse
@@ -28,7 +29,7 @@ def parse_args():
     # MCTS / AlphaZero params
     parser.add_argument("--num-sims",    type=int,   default=10000,
                         help="MCTS simulations per self-play step")
-    parser.add_argument("--num-self-play", type=int, default=8,
+    parser.add_argument("--num-self-play", type=int, default=10,
                         help="Self-play games to generate per epoch")
     parser.add_argument("--num-epochs",  type=int,   default=20,
                         help="Number of training epochs")
@@ -37,7 +38,7 @@ def parse_args():
     parser.add_argument("--tau",         type=float, default=1.0,
                         help="Temperature for π = N^(1/τ)")
     # Training params
-    parser.add_argument("--batch-size",  type=int,   default=64,
+    parser.add_argument("--batch-size",  type=int,   default=32,
                         help="Batch size for optimizer")
     parser.add_argument("--lr",          type=float, default=1e-3,
                         help="Learning rate")
@@ -47,10 +48,10 @@ def parse_args():
                         help="Target success rate to stop training")
     parser.add_argument("--regularization", type=float, default=1e-4,
                         help="L2 weight decay")
-    parser.add_argument("--max-episodes", type=int, default=10,
+    parser.add_argument("--max-episodes", type=int, default=70,
                         help="Maximum episodes per training run")
-    parser.add_argument("--num-eval",    type=int,   default=50,
-                        help="Number of games for evaluation")
+    parser.add_argument("--num-eval",    type=int,   default=1,
+                        help="Number of games for evaluation") # Only makes sense to set up higher if changed evaluation to probabilistic (not it is deterministic)
     parser.add_argument("--buffer-size", type=int,   default=20000,
                         help="Replay buffer capacity")
     parser.add_argument("--sample-size", type=int,   default=1024,
@@ -118,6 +119,7 @@ def main():
         nS = env.observation_space.n
     else:
         nS = int((len(env.observation_space.sample()) - 1) * env.n_states) + 1
+        
     net    = AlphaZeroNet(nS, nA).to(device)
     optimizer   = optim.Adam(net.parameters(), lr=LR, weight_decay=REGULARIZATION)
     scheduler   = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=10)
