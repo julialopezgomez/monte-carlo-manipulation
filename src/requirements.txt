@@ -9,7 +9,7 @@ widgetsnbextension==4.0.5
 jupyterlab-widgets
 
 # scientific
-numpy
+numpy<2.0.0
 scipy>=1.11.4,<2.0.0
 pymcubes==0.1.4
 quadprog
